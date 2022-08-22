@@ -6,8 +6,10 @@ import {
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import clsx from "clsx";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { UserInfo } from "..";
+import { fetchRemovePost } from "../../redux/slices/PostsSlice";
 
 import styles from "./Post.module.scss";
 
@@ -27,11 +29,15 @@ export const Post = ({
   isLoading,
   isEditable,
 }) => {
+  const dispatch = useDispatch();
+
   if (isLoading) {
     return <PostSkeleton />;
   }
 
-  const onClickRemove = () => {};
+  const onClickRemove = () => {
+    dispatch(fetchRemovePost(id));
+  };
 
   return (
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>

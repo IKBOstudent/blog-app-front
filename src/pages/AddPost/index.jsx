@@ -1,29 +1,98 @@
 import React from "react";
 import { Button, Paper, TextField } from "@mui/material";
 import SimpleMdeReact from "react-simplemde-editor";
+import axios from "../../axios";
 
 import "easymde/dist/easymde.min.css";
 import styles from "./AddPost.module.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, Navigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const AddPost = () => {
-  const imageUrl = "";
-  const [value, setValue] = React.useState("");
+  const params = useParams();
+  const navigate = useNavigate();
+  const isAuth = useSelector((state) => Boolean(state.AuthReducer.data));
 
-  const handleChangeFile = () => {};
+  const [text, setText] = React.useState("");
+  const [title, setTitle] = React.useState("");
+  const [tags, setTags] = React.useState("");
+  const [imageUrl, setImageUrl] = React.useState("");
 
-  const onClickRemoveImage = () => {};
+  const [isLoading, setLoading] = React.useState("");
+
+  const inputFileRef = React.useRef();
+
+  const handleChangeFile = async (event) => {
+    try {
+      const formData = new FormData();
+      const file = event.target.files[0];
+      formData.append("image", file);
+      const { data } = await axios.post("/upload", formData);
+      setImageUrl("http://localhost:4444" + data.url);
+    } catch (err) {
+      console.warn(err);
+      alert(err);
+    }
+  };
+
+  const onClickRemoveImage = () => {
+    setImageUrl("");
+  };
 
   const onChange = React.useCallback((value) => {
-    setValue(value);
+    setText(value);
   }, []);
+
+  React.useEffect(() => {
+    if (params.id) {
+      axios
+        .get(`/posts/${params.id}`)
+        .then(({ data }) => {
+          setTitle(data.post.title);
+          setText(data.post.text);
+          setImageUrl(data.post.imageUrl);
+          setTags(data.post.tags.join(" "));
+        })
+        .catch((err) => {
+          console.warn(err);
+          alert(err);
+        });
+    }
+  }, []);
+
+  const onSubmit = async () => {
+    try {
+      setLoading(true);
+
+      if (imageUrl) {
+        setImageUrl(params.id ? imageUrl : `http://localhost:4444${imageUrl}`);
+      }
+
+      const fields = {
+        title,
+        text,
+        tags: tags.split(" "),
+        imageUrl: imageUrl ? imageUrl : "",
+      };
+
+      const { data } = params.id
+        ? await axios.patch("/posts/" + params.id, fields)
+        : await axios.post("/posts", fields);
+
+      const id = params.id ? params.id : data.post._id;
+      navigate(`/posts/${id}`);
+    } catch (err) {
+      console.warn(err);
+      alert(err);
+    }
+  };
 
   const options = React.useMemo(
     () => ({
       spellChecker: false,
       maxHeight: "400px",
       autofocus: true,
-      placeholder: "Text here...",
+      placeholder: "Your post text...",
       status: false,
       autosave: {
         enabled: true,
@@ -33,23 +102,37 @@ export const AddPost = () => {
     []
   );
 
+  if (!window.localStorage.getItem("token") && !isAuth) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <Paper className={styles.root}>
-      <Button variant="outlined" size="large">
-        Load preview
+      <Button
+        onClick={() => inputFileRef.current.click()}
+        variant="outlined"
+        size="large"
+      >
+        Load image
       </Button>
-      <input type="file" onChange={handleChangeFile} hidden />
+      <input
+        ref={inputFileRef}
+        type="file"
+        onChange={handleChangeFile}
+        hidden
+      />
       {imageUrl && (
-        <Button variant="contained" color="error" onClick={onClickRemoveImage}>
-          Delete
-        </Button>
-      )}
-      {imageUrl && (
-        <img
-          className={styles.image}
-          src={`http://localhost:4444${imageUrl}`}
-          alt="Uploaded"
-        />
+        <>
+          <Button
+            style={{ marginLeft: 20 }}
+            variant="contained"
+            color="error"
+            onClick={onClickRemoveImage}
+          >
+            Delete
+          </Button>
+          <img className={styles.image} src={imageUrl} alt="Uploaded" />
+        </>
       )}
       <br />
       <br />
@@ -57,23 +140,27 @@ export const AddPost = () => {
         classes={{ root: styles.title }}
         variant="standard"
         placeholder="Title..."
+        value={title}
+        onChange={(event) => setTitle(event.target.value)}
         fullWidth
       />
       <TextField
         classes={{ root: styles.tags }}
         variant="standard"
         placeholder="Tags"
+        value={tags}
+        onChange={(event) => setTags(event.target.value)}
         fullWidth
       />
       <SimpleMdeReact
         className={styles.editor}
-        value={value}
+        value={text}
         onChange={onChange}
         options={options}
       />
       <div className={styles.buttons}>
-        <Button size="large" variant="contained">
-          Publish
+        <Button onClick={onSubmit} size="large" variant="contained">
+          {params.id ? "Save" : "Publish"}
         </Button>
         <Link to="/" className={styles.button_cancel}>
           <Button size="large">Cancel</Button>

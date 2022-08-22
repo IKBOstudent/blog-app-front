@@ -8,6 +8,7 @@ import { fetchPosts, fetchTags } from "../../redux/slices/PostsSlice";
 
 export const Home = () => {
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.AuthReducer.data);
   const { posts, tags } = useSelector((state) => state.PostsReducer);
 
   const postsLoading = posts.status === "loading";
@@ -33,14 +34,13 @@ export const Home = () => {
                   key={i}
                   id={obj._id}
                   title={obj.title}
-                  // imageUrl="https://images.unsplash.com/photo-1580327344181-c1163234e5a0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80"
                   imageUrl={obj.imageUrl}
                   author={obj.author}
                   createdAt={obj.createdAt}
                   viewsCount={obj.viewsCount}
                   commentsCount={3}
                   tags={obj.tags}
-                  isEditable
+                  isEditable={userData?._id === obj.author._id}
                 />
               ))}
         </Grid>
