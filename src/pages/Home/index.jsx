@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Grid, Tab, Tabs } from "@mui/material";
 
 import styles from "./Home.module.scss";
-import { CommentsBlock, Post, TagsBlock } from "../../components";
+import { Post, TagsBlock } from "../../components";
 import { fetchPosts, fetchTags } from "../../redux/slices/PostsSlice";
 
 export const Home = () => {
@@ -46,25 +46,6 @@ export const Home = () => {
         </Grid>
         <Grid xs={4} item>
           <TagsBlock items={tags.items} isLoading={tagsLoading} />
-          <CommentsBlock
-            items={[
-              {
-                author: {
-                  fullName: "mark",
-                  avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-                },
-                text: "Test comment mark",
-              },
-              {
-                author: {
-                  fullName: "john",
-                  avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-                },
-                text: "Test comment john",
-              },
-            ]}
-            isLoading={false}
-          />
         </Grid>
       </Grid>
     </>

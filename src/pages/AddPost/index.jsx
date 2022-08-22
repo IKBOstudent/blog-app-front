@@ -18,7 +18,7 @@ export const AddPost = () => {
   const [tags, setTags] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
 
-  const [isLoading, setLoading] = React.useState("");
+  // const [isLoading, setLoading] = React.useState("");
 
   const inputFileRef = React.useRef();
 
@@ -28,7 +28,7 @@ export const AddPost = () => {
       const file = event.target.files[0];
       formData.append("image", file);
       const { data } = await axios.post("/upload", formData);
-      setImageUrl("http://localhost:4444" + data.url);
+      setImageUrl(String(process.env.REACT_APP_API_URL) + data.url);
     } catch (err) {
       console.warn(err);
       alert(err);
@@ -62,10 +62,14 @@ export const AddPost = () => {
 
   const onSubmit = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
 
       if (imageUrl) {
-        setImageUrl(params.id ? imageUrl : `http://localhost:4444${imageUrl}`);
+        setImageUrl(
+          params.id
+            ? imageUrl
+            : String(process.env.REACT_APP_API_URL) + imageUrl
+        );
       }
 
       const fields = {

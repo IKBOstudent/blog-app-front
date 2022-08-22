@@ -9,7 +9,6 @@ import { fetchAuthMe } from "./redux/slices/AuthSlice";
 
 function App() {
   const dispatch = useDispatch();
-  // const isAuth = useSelector((state) => Boolean(state.AuthReducer.data));
 
   React.useEffect(() => {
     dispatch(fetchAuthMe());
