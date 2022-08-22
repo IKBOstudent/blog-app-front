@@ -10,9 +10,9 @@ export const FullPost = () => {
   const [isLoading, setLoading] = React.useState(true);
   const params = useParams();
 
-  React.useEffect(() => {
+  const fetchPost = () => {
     axios
-      .get("posts/" + params.id)
+      .get("posts/post/" + params.id)
       .then((res) => {
         setData(res.data.post);
         setLoading(false);
@@ -21,6 +21,10 @@ export const FullPost = () => {
         console.warn(err);
         alert("Posts request failed");
       });
+  };
+
+  React.useEffect(() => {
+    fetchPost();
   }, [params.id]);
 
   if (isLoading) {
@@ -43,26 +47,8 @@ export const FullPost = () => {
       >
         <p>{data.text}</p>
       </Post>
-      <CommentsBlock
-        items={[
-          {
-            author: {
-              fullName: "mark",
-              avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-            },
-            text: "Test comment mark",
-          },
-          {
-            author: {
-              fullName: "john",
-              avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-            },
-            text: "Test comment john",
-          },
-        ]}
-        isLoading={false}
-      >
-        <AddComment />
+      <CommentsBlock items={data.comments} isLoading={false}>
+        <AddComment onNewComment={() => fetchPost()} />
       </CommentsBlock>
     </>
   );

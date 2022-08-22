@@ -1,8 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../../../axios";
 
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  const { data } = await axios.get("/posts");
+export const fetchPosts = createAsyncThunk("posts/fetchPosts", async (sortType) => {
+  const { data } = await axios.get("/posts/" + sortType);
+  return data.posts;
+});
+
+export const fetchPostsByTag = createAsyncThunk("posts/fetchRemovePost", async (name) => {
+  const { data } = await axios.get("/posts/tag/" + name);
   return data.posts;
 });
 
@@ -11,13 +16,10 @@ export const fetchTags = createAsyncThunk("posts/fetchTags", async () => {
   return data.tags;
 });
 
-export const fetchRemovePost = createAsyncThunk(
-  "posts/fetchRemovePost",
-  async (id) => {
-    const { data } = await axios.delete("/posts/" + id);
-    return data;
-  }
-);
+export const fetchRemovePost = createAsyncThunk("posts/fetchRemovePost", async (id) => {
+  const { data } = await axios.delete("/posts/post/" + id);
+  return data;
+});
 
 const initialState = {
   posts: {
@@ -47,6 +49,18 @@ const PostsSlice = createSlice({
       state.posts.items = [];
     },
 
+    [fetchPostsByTag.pending]: (state) => {
+      state.posts.status = "loading";
+    },
+    [fetchPostsByTag.fulfilled]: (state, action) => {
+      state.posts.status = "success";
+      state.posts.items = action.payload;
+    },
+    [fetchPostsByTag.rejected]: (state) => {
+      state.posts.status = "error";
+      state.posts.items = [];
+    },
+
     [fetchTags.pending]: (state) => {
       state.tags.status = "loading";
     },
@@ -60,14 +74,8 @@ const PostsSlice = createSlice({
     },
 
     [fetchRemovePost.pending]: (state, action) => {
-      state.posts.items = state.posts.items.filter(
-        (obj) => obj._id !== action.meta.arg
-      );
+      state.posts.items = state.posts.items.filter((obj) => obj._id !== action.meta.arg);
     },
-    // [fetchRemovePost.fulfilled]: (state, action) => {
-    //   state.tags.status = "success";
-    //   state.tags.items = action.payload;
-    // },
     [fetchRemovePost.rejected]: (state) => {
       state.posts.status = "error";
     },

@@ -46,7 +46,7 @@ export const AddPost = () => {
   React.useEffect(() => {
     if (params.id) {
       axios
-        .get(`/posts/${params.id}`)
+        .get(`/posts/post/${params.id}`)
         .then(({ data }) => {
           setTitle(data.post.title);
           setText(data.post.text);
@@ -65,11 +65,7 @@ export const AddPost = () => {
       // setLoading(true);
 
       if (imageUrl) {
-        setImageUrl(
-          params.id
-            ? imageUrl
-            : String(process.env.REACT_APP_API_URL) + imageUrl
-        );
+        setImageUrl(params.id ? imageUrl : String(process.env.REACT_APP_API_URL) + imageUrl);
       }
 
       const fields = {
@@ -112,27 +108,13 @@ export const AddPost = () => {
 
   return (
     <Paper className={styles.root}>
-      <Button
-        onClick={() => inputFileRef.current.click()}
-        variant="outlined"
-        size="large"
-      >
+      <Button onClick={() => inputFileRef.current.click()} variant="outlined" size="large">
         Load image
       </Button>
-      <input
-        ref={inputFileRef}
-        type="file"
-        onChange={handleChangeFile}
-        hidden
-      />
+      <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden />
       {imageUrl && (
         <>
-          <Button
-            style={{ marginLeft: 20 }}
-            variant="contained"
-            color="error"
-            onClick={onClickRemoveImage}
-          >
+          <Button style={{ marginLeft: 20 }} variant="contained" color="error" onClick={onClickRemoveImage}>
             Delete
           </Button>
           <img className={styles.image} src={imageUrl} alt="Uploaded" />
@@ -156,12 +138,7 @@ export const AddPost = () => {
         onChange={(event) => setTags(event.target.value)}
         fullWidth
       />
-      <SimpleMdeReact
-        className={styles.editor}
-        value={text}
-        onChange={onChange}
-        options={options}
-      />
+      <SimpleMdeReact className={styles.editor} value={text} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button onClick={onSubmit} size="large" variant="contained">
           {params.id ? "Save" : "Publish"}
