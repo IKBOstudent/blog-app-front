@@ -1,3 +1,20 @@
 .tabs {
   margin-bottom: 15px;
 }
+
+.noPosts {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  h2 {
+    width: 40%;
+    align-self: center;
+  }
+  a {
+    width: 30%;
+    align-self: center;
+    text-decoration: none;
+  }
+}

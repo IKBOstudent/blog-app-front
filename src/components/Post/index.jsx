@@ -1,10 +1,12 @@
 import { ChatBubbleOutlineOutlined, Delete, Edit, RemoveRedEyeOutlined } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import clsx from "clsx";
+import { useContext } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { UserInfo } from "..";
-import { fetchRemovePost } from "../../redux/slices/PostsSlice";
+import { TagContext } from "../../App";
+import { fetchRemovePost, fetchTags } from "../../redux/slices/PostsSlice";
 
 import styles from "./Post.module.scss";
 
@@ -25,12 +27,14 @@ export const Post = ({
   isEditable,
 }) => {
   const dispatch = useDispatch();
+  const { setSortTag } = useContext(TagContext);
 
   if (isLoading) {
     return <PostSkeleton />;
   }
 
   const onClickRemove = () => {
+    dispatch(fetchTags());
     dispatch(fetchRemovePost(id));
   };
 
@@ -40,11 +44,15 @@ export const Post = ({
         <div className={styles.editButtons}>
           <Link to={`/posts/${id}/edit`}>
             <IconButton color="primary">
-              <Edit />
+              <>
+                <Edit />
+              </>
             </IconButton>
           </Link>
           <IconButton onClick={onClickRemove} color="secondary">
-            <Delete />
+            <>
+              <Delete />
+            </>
           </IconButton>
         </div>
       )}
@@ -65,7 +73,7 @@ export const Post = ({
           <ul className={styles.tags}>
             {tags.map((name, i) => (
               <li key={i}>
-                <Link to={`/tag/${name}`}>#{name}</Link>
+                <div onClick={() => setSortTag(name)}>#{name}</div>
               </li>
             ))}
           </ul>

@@ -25,7 +25,6 @@ export const Login = () => {
 
   const onSubmit = async (values) => {
     const response = await dispatch(fetchAuthLogin(values));
-    // console.log(response);
 
     if (!response.payload) {
       return alert("Sign in failed :(");
@@ -71,13 +70,7 @@ export const Login = () => {
             required: "Enter your password",
           })}
         />
-        <Button
-          disabled={!isValid}
-          type="submit"
-          size="large"
-          variant="contained"
-          fullWidth
-        >
+        <Button disabled={!isValid} type="submit" size="large" variant="contained" fullWidth>
           Sign in
         </Button>
       </form>

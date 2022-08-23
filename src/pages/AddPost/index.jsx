@@ -67,11 +67,12 @@ export const AddPost = () => {
       if (imageUrl) {
         setImageUrl(params.id ? imageUrl : String(process.env.REACT_APP_API_URL) + imageUrl);
       }
+      const tagsArray = (tags + "").split(" ");
 
       const fields = {
         title,
         text,
-        tags: tags.split(" "),
+        tags: tagsArray.filter((obj, i) => tagsArray.indexOf(obj) === i),
         imageUrl: imageUrl ? imageUrl : "",
       };
 

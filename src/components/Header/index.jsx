@@ -1,6 +1,8 @@
 import { Button, Container } from "@mui/material";
+import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { TagContext } from "../../App";
 import { logout } from "../../redux/slices/AuthSlice";
 import styles from "./Header.module.scss";
 
@@ -15,11 +17,13 @@ export const Header = () => {
     }
   };
 
+  const { setSortTag } = useContext(TagContext);
+
   return (
     <div className={styles.root}>
       <Container maxWidth="lg">
         <div className={styles.inner}>
-          <Link to="/" className={styles.logo}>
+          <Link to="/" onClick={() => setSortTag("")} className={styles.logo}>
             <div>BlogMan</div>
           </Link>
           <div className={styles.buttons}>
@@ -28,11 +32,7 @@ export const Header = () => {
                 <Link to="/add-post">
                   <Button variant="contained">New post</Button>
                 </Link>
-                <Button
-                  onClick={onClickLogout}
-                  variant="contained"
-                  color="error"
-                >
+                <Button onClick={onClickLogout} variant="contained" color="error">
                   Sign out
                 </Button>
               </>

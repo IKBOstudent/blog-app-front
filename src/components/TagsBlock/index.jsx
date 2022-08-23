@@ -1,13 +1,14 @@
 import { Tag } from "@mui/icons-material";
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Skeleton } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { SideBlock } from "..";
+import { TagContext } from "../../App";
 
 import styles from "./TagsBlock.module.scss";
 
-export const TagsBlock = ({ items, isLoading, onSetTag }) => {
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+export const TagsBlock = ({ items, isLoading }) => {
+  const { sortTag, setSortTag } = useContext(TagContext);
 
   return (
     <SideBlock className={styles.root} title="Tags">
@@ -16,12 +17,11 @@ export const TagsBlock = ({ items, isLoading, onSetTag }) => {
           <div
             key={i}
             onClick={() => {
-              onSetTag(selectedIndex !== i ? name : "");
-              setSelectedIndex(selectedIndex !== i ? i : -1);
+              setSortTag(sortTag !== name ? name : "");
             }}
             style={{ textDecoration: "none", color: "black" }}
           >
-            <ListItem selected={i === selectedIndex} disablePadding>
+            <ListItem selected={name === sortTag} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <Tag />

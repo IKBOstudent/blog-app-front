@@ -4,9 +4,12 @@ import { CommentsBlock, AddComment, Post } from "../../components";
 import axios from "../../axios";
 
 import styles from "./FullPost.module.scss";
+import { useSelector } from "react-redux";
 
 export const FullPost = () => {
   const [data, setData] = React.useState();
+  const userData = useSelector((state) => state.AuthReducer.data);
+
   const [isLoading, setLoading] = React.useState(true);
   const params = useParams();
 
@@ -30,20 +33,20 @@ export const FullPost = () => {
   if (isLoading) {
     return <Post isLoading />;
   }
-
   return (
     <>
       <Post
         className={styles.post}
-        id={1}
+        id={data._id}
         title={data.title}
         imageUrl={data.imageUrl}
         author={data.author}
         createdAt={data.createdAt}
         viewsCount={data.viewsCount}
-        commentsCount={3}
+        commentsCount={data.comments.length}
         tags={data.tags}
         isFullPost
+        isEditable={userData?._id === data.author._id}
       >
         <p>{data.text}</p>
       </Post>

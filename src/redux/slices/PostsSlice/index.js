@@ -6,7 +6,7 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async (sortType) 
   return data.posts;
 });
 
-export const fetchPostsByTag = createAsyncThunk("posts/fetchRemovePost", async (name) => {
+export const fetchPostsByTag = createAsyncThunk("posts/fetchPostsByTag", async (name) => {
   const { data } = await axios.get("/posts/tag/" + name);
   return data.posts;
 });
@@ -17,8 +17,8 @@ export const fetchTags = createAsyncThunk("posts/fetchTags", async () => {
 });
 
 export const fetchRemovePost = createAsyncThunk("posts/fetchRemovePost", async (id) => {
-  const { data } = await axios.delete("/posts/post/" + id);
-  return data;
+  const response = await axios.delete("/posts/" + id);
+  return response;
 });
 
 const initialState = {
