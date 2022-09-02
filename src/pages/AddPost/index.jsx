@@ -91,14 +91,10 @@ export const AddPost = () => {
   const options = React.useMemo(
     () => ({
       spellChecker: false,
-      maxHeight: "400px",
-      autofocus: true,
-      placeholder: "Your post text...",
+      maxHeight: "250px",
+      autofocus: false,
+      placeholder: "Type here...",
       status: false,
-      autosave: {
-        enabled: true,
-        delay: 1000,
-      },
     }),
     []
   );

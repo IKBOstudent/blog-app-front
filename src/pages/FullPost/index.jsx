@@ -31,7 +31,12 @@ export const FullPost = () => {
   }, [params.id]);
 
   if (isLoading) {
-    return <Post isLoading />;
+    return (
+      <>
+        <Post isLoading />
+        <CommentsBlock isLoading={true} />
+      </>
+    );
   }
   return (
     <>

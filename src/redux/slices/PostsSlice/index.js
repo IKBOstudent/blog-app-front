@@ -74,7 +74,11 @@ const PostsSlice = createSlice({
     },
 
     [fetchRemovePost.pending]: (state, action) => {
+      const oddTags = state.posts.items.find((obj) => obj._id === action.meta.arg).tags;
+      console.log(oddTags);
       state.posts.items = state.posts.items.filter((obj) => obj._id !== action.meta.arg);
+      state.tags.items = state.tags.items.filter((name) => !oddTags.includes(name));
+      console.log(state.tags.items);
     },
     [fetchRemovePost.rejected]: (state) => {
       state.posts.status = "error";

@@ -7,6 +7,22 @@ import { Header } from "./components";
 import { Home, FullPost, Registration, Login, AddPost } from "./pages";
 import { fetchAuthMe } from "./redux/slices/AuthSlice";
 
+/*
+===============================================================
+
+TODO: 
+1. image formatting and resizing
+2. image loading skeleton on AddPost page
+3. text formatter for posts
+4. intro page
+5. user setting page
+
+FIX:
+post delete and redirect
+
+===============================================================
+*/
+
 export const TagContext = createContext();
 
 function App() {

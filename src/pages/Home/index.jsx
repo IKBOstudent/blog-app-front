@@ -30,7 +30,7 @@ export const Home = () => {
 
   return (
     <>
-      {!tagsLoading && posts.items.length > 0 && !sortTag ? (
+      {postsLoading || (posts.items.length > 0 && !sortTag) ? (
         <Tabs className={styles.tabs} value={sortType === "latest" ? 0 : 1}>
           <Tab onClick={() => setSortType("latest")} label="New" />
           <Tab onClick={() => setSortType("popular")} label="Popular" />
@@ -71,7 +71,7 @@ export const Home = () => {
           )}
         </Grid>
         <Grid xs={4} item>
-          {!tagsLoading && posts.items.length > 0 && <TagsBlock items={tags.items} isLoading={tagsLoading} />}
+          {(tagsLoading || posts.items.length > 0) && <TagsBlock items={tags.items} isLoading={tagsLoading} />}
         </Grid>
       </Grid>
     </>

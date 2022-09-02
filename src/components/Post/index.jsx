@@ -3,10 +3,10 @@ import { IconButton } from "@mui/material";
 import clsx from "clsx";
 import { useContext } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserInfo } from "..";
 import { TagContext } from "../../App";
-import { fetchRemovePost, fetchTags } from "../../redux/slices/PostsSlice";
+import { fetchRemovePost } from "../../redux/slices/PostsSlice";
 
 import styles from "./Post.module.scss";
 
@@ -29,13 +29,19 @@ export const Post = ({
   const dispatch = useDispatch();
   const { setSortTag } = useContext(TagContext);
 
+  const navigate = useNavigate();
+
   if (isLoading) {
-    return <PostSkeleton />;
+    return <PostSkeleton isFullPost={true} />;
   }
 
   const onClickRemove = () => {
-    dispatch(fetchTags());
-    dispatch(fetchRemovePost(id));
+    if (window.confirm("Are you sure you want to remove this post?")) {
+      dispatch(fetchRemovePost(id));
+
+      // dispatch(fetchTags());
+      navigate("/");
+    }
   };
 
   return (
@@ -73,7 +79,9 @@ export const Post = ({
           <ul className={styles.tags}>
             {tags.map((name, i) => (
               <li key={i}>
-                <div onClick={() => setSortTag(name)}>#{name}</div>
+                <div className={styles.tag} onClick={() => setSortTag(name)}>
+                  #{name}
+                </div>
               </li>
             ))}
           </ul>
