@@ -57,7 +57,9 @@ export const Home = () => {
                         ))
                     ) : (
                         <div className={styles.noPosts}>
-                            <Typography variant="h4">No posts yet</Typography>
+                            <Typography variant="h5" style={{ color: "#ffffff", fontWeight: 700 }}>
+                                No posts yet
+                            </Typography>
                             {userData && (
                                 <Link to="/add-post">
                                     <Button size="large" variant="contained">
