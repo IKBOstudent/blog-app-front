@@ -1,4 +1,27 @@
 .root {
-  margin: 0 auto 15px auto;
-  width: 80%;
+    margin: 0 auto 15px auto;
+}
+
+.title {
+    color: #ffffff;
+    padding: 15px 15px 0 15px;
+}
+
+.commentText {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    h5,
+    h3 {
+        white-space: pre-wrap;
+        margin: 0;
+    }
+
+    h5 {
+        color: #979797;
+    }
+
+    h3 {
+        color: #ffffff;
+    }
 }
