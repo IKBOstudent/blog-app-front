@@ -1,16 +1,16 @@
-import { ChatBubbleOutlineOutlined, Delete, Edit, RemoveRedEyeOutlined } from "@mui/icons-material";
-import { ButtonGroup, Button } from "@mui/material";
-import clsx from "clsx";
-import { useContext } from "react";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { UserInfo } from "..";
-import { TagContext } from "../../App";
-import { fetchRemovePost } from "../../redux/slices/PostsSlice";
+import { ChatBubbleOutlineOutlined, Delete, Edit, RemoveRedEyeOutlined } from '@mui/icons-material';
+import { ButtonGroup, Button, Paper } from '@mui/material';
+import clsx from 'clsx';
+import { useContext } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserInfo } from '..';
+import { TagContext } from '../../App';
+import { fetchRemovePost } from '../../redux/slices/PostsSlice';
 
-import styles from "./Post.module.scss";
+import styles from './Post.module.scss';
 
-import { PostSkeleton } from "./PostSkeleton";
+import { PostSkeleton } from './PostSkeleton';
 
 export const Post = ({
     id,
@@ -36,18 +36,18 @@ export const Post = ({
     }
 
     const onClickRemove = () => {
-        if (window.confirm("Are you sure you want to remove this post?")) {
+        if (window.confirm('Are you sure you want to remove this post?')) {
             dispatch(fetchRemovePost(id));
 
             // dispatch(fetchTags());
-            navigate("/");
+            navigate('/');
         }
     };
 
     return (
         <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
             {isEditable && (
-                <div className={styles.editButtons}>
+                <Paper elevation={8} classes={{ root: styles.editButtons }}>
                     <Link to={`/posts/${id}/edit`}>
                         <Button>
                             <Edit color="primary" />
@@ -56,7 +56,7 @@ export const Post = ({
                     <Button onClick={onClickRemove}>
                         <Delete color="secondary" />
                     </Button>
-                </div>
+                </Paper>
             )}
             {imageUrl &&
                 (isFullPost ? (

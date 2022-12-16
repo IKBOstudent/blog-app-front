@@ -1,28 +1,28 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { CommentsBlock, AddComment, Post } from "../../components";
-import axios from "../../axios";
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { CommentsBlock, AddComment, Post } from '../../components';
+import axios from '../../axios';
 
-import styles from "./FullPost.module.scss";
-import { useSelector } from "react-redux";
+import styles from './FullPost.module.scss';
+import { useSelector } from 'react-redux';
 
 export const FullPost = () => {
     const [data, setData] = React.useState();
-    const userData = useSelector(state => state.AuthReducer.data);
+    const userData = useSelector((state) => state.AuthReducer.data);
 
     const [isLoading, setLoading] = React.useState(true);
     const params = useParams();
 
     const fetchPost = () => {
         axios
-            .get("posts/post/" + params.id)
-            .then(res => {
+            .get('posts/post/' + params.id)
+            .then((res) => {
                 setData(res.data.post);
                 setLoading(false);
             })
-            .catch(err => {
+            .catch((err) => {
                 console.warn(err);
-                alert("Posts request failed");
+                alert('Posts request failed');
             });
     };
 
@@ -30,18 +30,14 @@ export const FullPost = () => {
         fetchPost();
     }, [params.id]);
 
-    if (isLoading) {
-        return (
-            <>
-                <Post isLoading />
-                <CommentsBlock isLoading={true} />
-            </>
-        );
-    }
-    return (
+    return isLoading ? (
+        <>
+            <Post isLoading />
+            <CommentsBlock isLoading={true} />
+        </>
+    ) : (
         <>
             <Post
-                className={styles.post}
                 id={data._id}
                 title={data.title}
                 imageUrl={data.imageUrl}
@@ -51,9 +47,8 @@ export const FullPost = () => {
                 commentsCount={data.comments.length}
                 tags={data.tags}
                 isFullPost
-                isEditable={userData?._id === data.author._id}
-            >
-                <p style={{ fontSize: "1.2rem" }}>{data.text}</p>
+                isEditable={userData?._id === data.author._id}>
+                <p style={{ fontSize: '1.2rem' }}>{data.text}</p>
             </Post>
             <CommentsBlock items={data.comments} isLoading={false}>
                 <AddComment onNewComment={() => fetchPost()} />
