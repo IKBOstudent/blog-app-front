@@ -2,6 +2,7 @@ import React from 'react';
 import { Backdrop, Button, CircularProgress, Paper, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link, useNavigate, Navigate, useParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import axios from '../../axios';
 
 import styles from './AddPost.module.scss';
@@ -10,9 +11,6 @@ export const AddPost = () => {
     const params = useParams();
     const navigate = useNavigate();
 
-    const [text, setText] = React.useState('');
-    const [title, setTitle] = React.useState('');
-    const [tags, setTags] = React.useState('');
     const [imageUrl, setImageUrl] = React.useState('');
 
     const [isLoading, setLoading] = React.useState(false);
@@ -20,6 +18,22 @@ export const AddPost = () => {
     const [isChangingFile, setChangingFile] = React.useState(false);
 
     const inputFileRef = React.useRef();
+
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        resetField,
+        getValues,
+        formState: { errors, isValid },
+    } = useForm({
+        defaultValues: {
+            title: '',
+            text: '',
+            tags: '',
+        },
+        mode: 'onChange',
+    });
 
     const handleChangeFile = async (event) => {
         try {
@@ -32,35 +46,37 @@ export const AddPost = () => {
                 const { data } = await axios.post('/upload', formData);
                 setImageUrl(String(process.env.REACT_APP_API_URL) + data.url);
             }
-
-            setChangingFile(false);
         } catch (err) {
             console.warn(err);
-            alert('here', err);
+            alert(err);
+        } finally {
             setChangingFile(false);
         }
     };
 
     React.useEffect(() => {
         if (params.id) {
+            setLoading(true);
             axios
                 .get(`/posts/post/${params.id}`)
                 .then(({ data }) => {
-                    setTitle(data.post.title);
-                    setText(data.post.text);
+                    setValue('title', data.post.title);
+                    setValue('text', data.post.text);
+                    setValue('tags', data.post.tags.join(' '));
                     setImageUrl(data.post.imageUrl);
-                    setTags(data.post.tags.join(' '));
                 })
                 .catch((err) => {
                     console.warn('unable to post', err);
                     alert(err);
-                });
+                })
+                .finally(() => setLoading(false));
         }
-    }, []);
+    }, [params.id]);
 
-    const onSubmit = async () => {
+    const onSubmit = async ({ title, text, tags }) => {
         try {
             setLoading(true);
+            console.log({ title, text, tags });
 
             const tagsArray = (tags + '').split(' ');
 
@@ -80,6 +96,9 @@ export const AddPost = () => {
         } catch (err) {
             console.warn(err);
             alert(err);
+            resetField('title');
+            resetField('text');
+            resetField('tags');
             setLoading(false);
         }
     };
@@ -109,41 +128,56 @@ export const AddPost = () => {
                 </>
             )}
 
-            <TextField
-                classes={{ root: styles.title }}
-                variant="standard"
-                placeholder="Title"
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                fullWidth
-            />
-            <TextField
-                classes={{ root: styles.tags }}
-                variant="standard"
-                placeholder="Tags"
-                label="Add tags to your post"
-                value={tags}
-                onChange={(event) => setTags(event.target.value)}
-                // fullWidth
-            />
-            <TextField
-                classes={{ root: styles.description }}
-                variant="filled"
-                label="Description"
-                placeholder="Enter description here..."
-                multiline
-                fullWidth
-                value={text}
-                onChange={(event) => setText(event.target.value)}
-            />
-            <div className={styles.buttons}>
-                <Button onClick={onSubmit} size="large" variant="contained">
-                    {params.id ? 'Save' : 'Publish'}
-                </Button>
-                <Link to="/" className={styles.button_cancel}>
-                    <Button size="large">Cancel</Button>
-                </Link>
-            </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <TextField
+                    InputLabelProps={{ shrink: true }}
+                    classes={{ root: styles.title }}
+                    variant="standard"
+                    placeholder="Title"
+                    error={Boolean(errors.title?.message)}
+                    helperText={errors.title?.message}
+                    fullWidth
+                    {...register('title', {
+                        required: 'Title required',
+                    })}
+                />
+                <TextField
+                    InputLabelProps={{ shrink: true }}
+                    classes={{ root: styles.tags }}
+                    variant="standard"
+                    placeholder="Tags"
+                    label="Add tags to your post"
+                    error={Boolean(errors.tags?.message)}
+                    helperText={errors.tags?.message}
+                    {...register('tags', {
+                        validate: (value) =>
+                            value.split(' ').filter((item) => item.length > 12).length === 0 ||
+                            'Too long tag name',
+                    })}
+                />
+                <TextField
+                    InputLabelProps={{ shrink: true }}
+                    classes={{ root: styles.description }}
+                    variant="filled"
+                    label="Description"
+                    placeholder="Enter description here..."
+                    multiline
+                    fullWidth
+                    error={Boolean(errors.text?.message)}
+                    helperText={errors.text?.message}
+                    {...register('text', {
+                        required: 'Description required',
+                    })}
+                />
+                <div className={styles.buttons}>
+                    <Button disabled={!isValid} type="submit" size="large" variant="contained">
+                        {params.id ? 'Save' : 'Publish'}
+                    </Button>
+                    <Link to="/" className={styles.button_cancel}>
+                        <Button size="large">Cancel</Button>
+                    </Link>
+                </div>
+            </form>
         </Paper>
     );
 };

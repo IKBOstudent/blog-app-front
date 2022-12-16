@@ -31,7 +31,7 @@ export const Home = () => {
 
     return (
         <>
-            {posts.items.length ? (
+            {postsLoading || posts.items.length ? (
                 <Tabs className={styles.tabs} value={sortType === 'latest' ? 0 : 1}>
                     <Tab onClick={() => setSortType('latest')} label="New" />
                     {!sortTag && <Tab onClick={() => setSortType('popular')} label="Popular" />}
@@ -46,7 +46,7 @@ export const Home = () => {
 
             <div xs={12} md={8}>
                 {postsLoading ? (
-                    [1, 2, 3].map((_, i) => <Post key={i} isLoading />)
+                    [1, 2].map((_, i) => <Post key={i} isLoading />)
                 ) : posts.items.length ? (
                     posts.items.map((obj, i) => (
                         <Post

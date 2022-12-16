@@ -16,7 +16,6 @@ export const TagsBlock = ({ items, isLoading }) => {
                     <div className={styles.tag} key={i}>
                         {!isLoading ? (
                             <Chip
-                                iconSmall
                                 icon={<Tag />}
                                 color="secondary"
                                 label={name}

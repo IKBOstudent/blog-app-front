@@ -4,16 +4,17 @@
 }
 
 .title {
-    margin-top: 25px !important;
+    margin: 25px 0 !important;
+
     input {
-        font-size: 42px;
+        font-size: 40px;
         font-weight: 900;
     }
 
     div {
         &:before,
         &:after {
-            display: none;
+            /* display: none; */
         }
     }
 }
@@ -21,9 +22,6 @@
 .image {
     width: 100%;
     margin-top: 30px;
-}
-
-.tags {
 }
 
 .description {

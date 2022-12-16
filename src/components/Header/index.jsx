@@ -6,6 +6,7 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
+    Skeleton,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -19,11 +20,18 @@ import React from 'react';
 
 export const Header = () => {
     const dispatch = useDispatch();
-    const isAuth = useSelector((state) => Boolean(state.AuthReducer.data));
+
+    const auth_status = useSelector((state) => state.AuthReducer.status);
 
     const [isOpenModal, setOpenModal] = React.useState(false);
 
     const { setSortTag } = useContext(TagContext);
+
+    const handleLogout = () => {
+        dispatch(logout());
+        window.localStorage.removeItem('token');
+        setOpenModal(false);
+    };
 
     return (
         <div className={styles.root}>
@@ -33,13 +41,7 @@ export const Header = () => {
                     <Button color="secondary" onClick={() => setOpenModal(false)} autoFocus>
                         CANCEL
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                            dispatch(logout());
-                            window.localStorage.removeItem('token');
-                        }}>
+                    <Button variant="contained" color="primary" onClick={handleLogout}>
                         LOG OUT
                     </Button>
                 </DialogActions>
@@ -51,7 +53,13 @@ export const Header = () => {
                         BlogMan
                     </Link>
                     <div className={styles.buttons}>
-                        {isAuth ? (
+                        {auth_status === 'loading' && (
+                            <>
+                                <Skeleton variant="rounded" width={80} height={36} />
+                                <Skeleton variant="rounded" width={80} height={36} />
+                            </>
+                        )}
+                        {auth_status === 'success' && (
                             <>
                                 <Link to="/add-post">
                                     <Button variant="contained">New post</Button>
@@ -63,7 +71,8 @@ export const Header = () => {
                                     <LogoutIcon />
                                 </IconButton>
                             </>
-                        ) : (
+                        )}
+                        {auth_status === 'error' && (
                             <>
                                 <Link to="/login">
                                     <Button variant="outlined">Sign in</Button>

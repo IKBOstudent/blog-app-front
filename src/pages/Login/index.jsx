@@ -11,9 +11,10 @@ import styles from './Login.module.scss';
 export const Login = () => {
     const dispatch = useDispatch();
     const isAuth = useSelector((state) => Boolean(state.AuthReducer.data));
-    const auth_state = useSelector((state) => state.AuthReducer.status);
 
     const [error, setError] = React.useState({ name: '', status: false });
+
+    const [isLoading, setLoading] = React.useState(false);
 
     const {
         register,
@@ -28,17 +29,25 @@ export const Login = () => {
     });
 
     const onSubmit = async (values) => {
-        const response = await dispatch(fetchAuthLogin(values));
+        try {
+            setLoading(true);
+            const response = await dispatch(fetchAuthLogin(values));
 
-        if (!response.payload) {
-            setError({ name: 'Invalid credentials', status: true });
-            return;
-        }
+            if (!response.payload) {
+                setError({ name: 'Invalid credentials', status: true });
+                return;
+            }
 
-        if ('token' in response.payload.data) {
-            window.localStorage.setItem('token', response.payload.data.token);
-        } else {
-            alert('Server Error! JWT Token porblem');
+            if ('token' in response.payload) {
+                window.localStorage.setItem('token', response.payload.token);
+            } else {
+                alert('Server Error! JWT Token porblem');
+            }
+        } catch (err) {
+            console.warn(err);
+            alert(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -83,15 +92,13 @@ export const Login = () => {
                     })}
                 />
                 <Button
-                    disabled={!isValid || auth_state === 'loading'}
+                    disabled={!isValid || isLoading}
                     type="submit"
                     size="large"
                     variant="contained"
                     fullWidth>
                     Sign in
-                    {auth_state === 'loading' && (
-                        <CircularProgress color="secondary" className={styles.loader} />
-                    )}
+                    {isLoading && <CircularProgress color="secondary" className={styles.loader} />}
                 </Button>
             </form>
         </Paper>

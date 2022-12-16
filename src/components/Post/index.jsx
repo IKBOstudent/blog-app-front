@@ -1,7 +1,7 @@
 import { ChatBubbleOutlineOutlined, Delete, Edit, RemoveRedEyeOutlined } from '@mui/icons-material';
-import { ButtonGroup, Button, Paper } from '@mui/material';
+import { ButtonGroup, Button, Paper, Dialog, DialogContent, DialogActions } from '@mui/material';
 import clsx from 'clsx';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserInfo } from '..';
@@ -31,21 +31,37 @@ export const Post = ({
 
     const navigate = useNavigate();
 
+    const [isOpenModal, setOpenModal] = React.useState(false);
+    const onClickRemove = async () => {
+        try {
+            await dispatch(fetchRemovePost(id));
+
+            setOpenModal(false);
+            navigate('/');
+        } catch (err) {
+            console.warn(err);
+            alert(err);
+        }
+    };
+
     if (isLoading) {
         return <PostSkeleton isFullPost={true} />;
     }
 
-    const onClickRemove = () => {
-        if (window.confirm('Are you sure you want to remove this post?')) {
-            dispatch(fetchRemovePost(id));
-
-            // dispatch(fetchTags());
-            navigate('/');
-        }
-    };
-
     return (
         <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
+            <Dialog open={isOpenModal} onClose={() => setOpenModal(false)}>
+                <DialogContent>Are you sure you want to remove this post?</DialogContent>
+                <DialogActions>
+                    <Button color="secondary" onClick={() => setOpenModal(false)} autoFocus>
+                        CANCEL
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={onClickRemove}>
+                        REMOVE
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             {isEditable && (
                 <Paper elevation={8} classes={{ root: styles.editButtons }}>
                     <Link to={`/posts/${id}/edit`}>
@@ -53,7 +69,7 @@ export const Post = ({
                             <Edit color="primary" />
                         </Button>
                     </Link>
-                    <Button onClick={onClickRemove}>
+                    <Button onClick={() => setOpenModal(true)}>
                         <Delete color="secondary" />
                     </Button>
                 </Paper>

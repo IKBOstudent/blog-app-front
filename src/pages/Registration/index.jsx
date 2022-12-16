@@ -1,17 +1,21 @@
-import React from "react";
-import { Button, Paper, TextField, Typography } from "@mui/material";
+import React from 'react';
+import { Alert, Button, CircularProgress, Paper, TextField, Typography } from '@mui/material';
 
-import styles from "./Registration.module.scss";
-import { Navigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import validator from "validator";
+import styles from './Registration.module.scss';
+import { Navigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import validator from 'validator';
 
-import { useDispatch, useSelector } from "react-redux";
-import { fetchAuthRegister } from "../../redux/slices/AuthSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAuthRegister } from '../../redux/slices/AuthSlice';
 
 export const Registration = () => {
     const dispatch = useDispatch();
-    const isAuth = useSelector(state => Boolean(state.AuthReducer.data));
+    const isAuth = useSelector((state) => Boolean(state.AuthReducer.data));
+
+    const [error, setError] = React.useState({ name: '', status: false });
+
+    const [isLoading, setLoading] = React.useState(false);
 
     const {
         register,
@@ -19,25 +23,33 @@ export const Registration = () => {
         formState: { errors, isValid },
     } = useForm({
         defaultValues: {
-            fullName: "",
-            email: "",
-            password: "",
+            fullName: '',
+            email: '',
+            password: '',
         },
-        mode: "onChange",
+        mode: 'onChange',
     });
 
-    const onSubmit = async values => {
-        const response = await dispatch(fetchAuthRegister(values));
-        // console.log(response);
+    const onSubmit = async (values) => {
+        try {
+            setLoading(true);
+            const response = await dispatch(fetchAuthRegister(values));
 
-        if (!response.payload) {
-            return alert("Registration failed :(");
-        }
+            if (!response.payload) {
+                setError({ name: 'Invalid credentials', status: true });
+                return alert('Registration failed :(');
+            }
 
-        if ("token" in response.payload.data) {
-            window.localStorage.setItem("token", response.payload.data.token);
-        } else {
-            alert("Token porblem");
+            if ('token' in response.payload) {
+                window.localStorage.setItem('token', response.payload.token);
+            } else {
+                alert('Token porblem');
+            }
+        } catch (err) {
+            console.warn(err);
+            alert(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -50,6 +62,13 @@ export const Registration = () => {
             <Typography classes={{ root: styles.title }} variant="h5">
                 Registration
             </Typography>
+
+            {error.status && (
+                <Alert severity="error" style={{ marginBottom: '30px' }}>
+                    {error.name}
+                </Alert>
+            )}
+
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     className={styles.field}
@@ -57,11 +76,11 @@ export const Registration = () => {
                     fullWidth
                     error={Boolean(errors.fullName?.message)}
                     helperText={errors.fullName?.message}
-                    {...register("fullName", {
-                        required: "Enter your full name",
+                    {...register('fullName', {
+                        required: 'Enter your full name',
                         minLength: {
                             value: 3,
-                            message: "Too short full name",
+                            message: 'Too short full name',
                         },
                     })}
                 />
@@ -71,10 +90,10 @@ export const Registration = () => {
                     fullWidth
                     error={Boolean(errors.email?.message)}
                     helperText={errors.email?.message}
-                    {...register("email", {
-                        required: "Enter your email",
+                    {...register('email', {
+                        required: 'Enter your email',
                         validate: {
-                            isEmail: value => validator.isEmail(value) || "Invalid email",
+                            isEmail: (value) => validator.isEmail(value) || 'Invalid email',
                         },
                     })}
                 />
@@ -84,16 +103,22 @@ export const Registration = () => {
                     fullWidth
                     error={Boolean(errors.password?.message)}
                     helperText={errors.password?.message}
-                    {...register("password", {
-                        required: "Enter your password",
+                    {...register('password', {
+                        required: 'Enter your password',
                         minLength: {
                             value: 5,
-                            message: "Too short password",
+                            message: 'Too short password',
                         },
                     })}
                 />
-                <Button disabled={!isValid} type="submit" size="large" variant="contained" fullWidth>
+                <Button
+                    disabled={!isValid || isLoading}
+                    type="submit"
+                    size="large"
+                    variant="contained"
+                    fullWidth>
                     Sign up
+                    {isLoading && <CircularProgress color="secondary" className={styles.loader} />}
                 </Button>
             </form>
         </Paper>
