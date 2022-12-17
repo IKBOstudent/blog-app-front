@@ -12,17 +12,17 @@ import { theme } from "./theme";
 import App from "./App";
 import store from "./redux/store";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 root.render(
-  <>
-    <CssBaseline />
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </BrowserRouter>
-    </ThemeProvider>
-  </>
+    <>
+        <CssBaseline />
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <Provider store={store}>
+                    <App />
+                </Provider>
+            </BrowserRouter>
+        </ThemeProvider>
+    </>
 );
