@@ -13,22 +13,37 @@ import { fetchRemovePost } from "redux/slices/PostsSlice";
 
 import styles from "./Post.module.scss";
 
-import { PostSkeleton } from "./PostSkeleton";
+import { IUser } from "redux/slices/AuthSlice/types";
+
+export interface PostProps {
+    _id: string;
+    author: IUser;
+    title: string;
+    imageUrl: string;
+    tags: string[];
+    viewsCount: number;
+    commentsCount: number;
+    createdAt: string;
+
+    isFullPost: boolean;
+    isEditable: boolean;
+
+    children?: JSX.Element | string;
+}
 
 export const Post = ({
-    id,
-    title,
-    createdAt,
-    imageUrl,
+    _id,
     author,
+    title,
+    imageUrl,
+    tags,
     viewsCount,
     commentsCount,
-    tags,
-    children,
+    createdAt,
     isFullPost,
-    isLoading,
     isEditable,
-}) => {
+    children,
+}: PostProps) => {
     const dispatch = useAppDispatch();
     const { setSortTag } = React.useContext(TagContext);
 
@@ -37,7 +52,7 @@ export const Post = ({
     const [isOpenModal, setOpenModal] = React.useState(false);
     const onClickRemove = async () => {
         try {
-            await dispatch(fetchRemovePost(id));
+            await dispatch(fetchRemovePost(_id));
 
             setOpenModal(false);
             navigate("/");
@@ -47,12 +62,8 @@ export const Post = ({
         }
     };
 
-    if (isLoading) {
-        return <PostSkeleton isFullPost={true} />;
-    }
-
-    return (
-        <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
+    const DeletePostModal = () => {
+        return (
             <Dialog open={isOpenModal} onClose={() => setOpenModal(false)}>
                 <DialogContent>Are you sure you want to remove this post?</DialogContent>
                 <DialogActions>
@@ -64,43 +75,53 @@ export const Post = ({
                     </Button>
                 </DialogActions>
             </Dialog>
+        );
+    };
 
-            {isEditable && (
-                <Paper elevation={8} classes={{ root: styles.editButtons }}>
-                    <Link to={`/posts/${id}/edit`}>
-                        <Button>
-                            <Edit color="primary" />
-                        </Button>
-                    </Link>
-                    <Button onClick={() => setOpenModal(true)}>
-                        <Delete color="secondary" />
+    const EditButtons = () => {
+        return (
+            <Paper elevation={8} classes={{ root: styles.editButtons }}>
+                <Link to={`/posts/${_id}/edit`}>
+                    <Button>
+                        <Edit color="primary" />
                     </Button>
-                </Paper>
-            )}
-            {imageUrl ? (
-                isFullPost ? (
-                    <img
-                        className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
-                        src={imageUrl}
-                        alt={title}
-                    />
-                ) : (
-                    <Link to={`/posts/${id}`}>
-                        <img
-                            height={240}
-                            className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
-                            src={imageUrl}
-                            alt={title}
-                        />
-                    </Link>
-                )
-            ) : null}
+                </Link>
+                <Button onClick={() => setOpenModal(true)}>
+                    <Delete color="secondary" />
+                </Button>
+            </Paper>
+        );
+    };
+
+    const PostImage = () => {
+        return (
+            <Link to={`/posts/${_id}`} style={isFullPost ? { pointerEvents: "none" } : undefined}>
+                <img
+                    height={isFullPost ? undefined : 240}
+                    className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
+                    src={imageUrl}
+                    alt={title}
+                />
+            </Link>
+        );
+    };
+
+    return (
+        <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
+            <DeletePostModal />
+
+            {isEditable ? <EditButtons /> : null}
+
+            {imageUrl ? <PostImage /> : null}
+
             <div className={styles.wrapper}>
-                <UserInfo {...author} additionalText={createdAt} />
+                <UserInfo author={author} additionalText={createdAt} />
+
                 <div className={styles.indention}>
                     <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
-                        {isFullPost ? title : <Link to={`/posts/${id}`}>{title}</Link>}
+                        {isFullPost ? title : <Link to={`/posts/${_id}`}>{title}</Link>}
                     </h2>
+
                     <ul className={styles.tags}>
                         {tags.map((name, i) => (
                             <li key={i}>
@@ -110,7 +131,9 @@ export const Post = ({
                             </li>
                         ))}
                     </ul>
+
                     {children ? <div className={styles.content}>{children}</div> : null}
+
                     <ul className={styles.postDetails}>
                         <li>
                             <RemoveRedEyeOutlined />

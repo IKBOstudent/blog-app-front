@@ -1,4 +1,4 @@
-import { EStatus } from "../AuthSlice/types";
+import { EStatus } from "../types.common";
 
 export interface ITagsState {
     items: string[];

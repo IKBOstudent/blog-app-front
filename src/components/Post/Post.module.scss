@@ -110,38 +110,3 @@ $primary: #7bbabd;
         }
     }
 }
-
-.skeleton {
-    margin: 15px auto;
-    &Content {
-        padding: 20px;
-    }
-
-    &Info {
-        padding-left: 40px;
-    }
-
-    &Full {
-        margin: 15px auto;
-        background-color: #303030;
-        border-radius: 6px;
-        overflow: hidden;
-    }
-}
-
-.skeletonUser {
-    display: flex;
-
-    &Details {
-        display: flex;
-        flex-direction: column;
-    }
-}
-
-.skeletonTags {
-    display: flex;
-
-    span {
-        margin-right: 15px;
-    }
-}

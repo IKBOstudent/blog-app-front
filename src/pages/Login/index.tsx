@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { UseFormHandleSubmit, useForm } from "react-hook-form";
 import { Navigate } from "react-router-dom";
 
 import { Alert, Button, CircularProgress, Paper, TextField, Typography } from "@mui/material";
@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "hooks";
 
 export const Login = () => {
     const dispatch = useAppDispatch();
-    const isAuth = useAppSelector(state => Boolean(state.AuthReducer.data));
+    const isAuth = useAppSelector(state => Boolean(state.AuthReducer.user));
 
     const [error, setError] = React.useState({ name: "", status: false });
 
@@ -30,21 +30,22 @@ export const Login = () => {
         mode: "onChange",
     });
 
-    const onSubmit = async values => {
+    const onSubmit = async (values: { email: string; password: string }) => {
         try {
             setLoading(true);
             const data = await dispatch(fetchAuthLogin(values));
+            console.log(data);
 
             if (!data.payload) {
                 setError({ name: "Invalid credentials", status: true });
                 return;
             }
 
-            if ("token" in data.payload) {
-                window.localStorage.setItem("token", data.payload.token);
-            } else {
-                alert("Server Error! JWT Token porblem");
-            }
+            // if ("token" in data.payload) {
+            //     window.localStorage.setItem("token", data.payload.token);
+            // } else {
+            //     alert("Server Error! JWT Token porblem");
+            // }
         } catch (err) {
             console.warn(err);
             alert(err);

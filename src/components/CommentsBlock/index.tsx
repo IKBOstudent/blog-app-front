@@ -1,40 +1,43 @@
 import React from "react";
-import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Typography } from "@mui/material";
+import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 
 import styles from "./CommentsBlock.module.scss";
+import { IComment } from "redux/slices/PostsSlice/types";
+import CommentsSkeleton from "./CommentsSkeleton";
 
-export const CommentsBlock = ({ items, isLoading, children }) => {
+interface CommentsProps {
+    isLoading: boolean;
+
+    items?: IComment[];
+    children?: JSX.Element;
+}
+
+export const CommentsBlock = ({ isLoading, items, children }: CommentsProps) => {
     return (
         <div className={styles.root}>
             <Typography variant="h6" classes={{ root: styles.title }}>
                 Comments
             </Typography>
             <List>
-                {(isLoading ? [...Array(3)] : items).map((obj, index) => (
-                    <React.Fragment key={index}>
-                        <ListItem alignItems="flex-start">
-                            <ListItemAvatar>
-                                {isLoading ? (
-                                    <Skeleton variant="circular" width={40} height={40} />
-                                ) : (
-                                    <Avatar alt={obj.user.fullName} src={obj.user.avatarUrl} />
-                                )}
-                            </ListItemAvatar>
-                            {isLoading ? (
-                                <div style={{ display: "flex", flexDirection: "column" }}>
-                                    <Skeleton variant="text" height={25} width={120} />
-                                    <Skeleton variant="text" height={18} width={230} />
-                                </div>
-                            ) : (
+                {isLoading ? (
+                    <CommentsSkeleton />
+                ) : (
+                    items?.map((comment, i) => (
+                        <React.Fragment key={i}>
+                            <ListItem alignItems="flex-start">
+                                <ListItemAvatar>
+                                    <Avatar alt={comment.user.fullName} src="/noavatar.png" />
+                                </ListItemAvatar>
+
                                 <div className={styles.commentText}>
-                                    <h5>{obj.user.fullName}</h5>
-                                    <h3>{obj.text}</h3>
+                                    <h5>{comment.user.fullName}</h5>
+                                    <h3>{comment.text}</h3>
                                 </div>
-                            )}
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-                    </React.Fragment>
-                ))}
+                            </ListItem>
+                            <Divider variant="inset" component="li" />
+                        </React.Fragment>
+                    ))
+                )}
             </List>
             {children}
         </div>

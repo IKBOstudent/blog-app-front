@@ -1,12 +1,13 @@
-import { Tag } from '@mui/icons-material';
-import { Chip, Skeleton, Typography } from '@mui/material';
-import { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { TagContext } from '../../App';
+import React from "react";
+import { Tag } from "@mui/icons-material";
+import { Chip, Skeleton, Typography } from "@mui/material";
+import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+import { TagContext } from "../../App";
 
-import styles from './TagsBlock.module.scss';
+import styles from "./TagsBlock.module.scss";
 
-export const TagsBlock = ({ items, isLoading }) => {
+export const TagsBlock = ({ items, isLoading }: { items: string[]; isLoading: boolean }) => {
     const { sortTag, setSortTag } = useContext(TagContext);
 
     return (
@@ -19,18 +20,13 @@ export const TagsBlock = ({ items, isLoading }) => {
                                 icon={<Tag />}
                                 color="secondary"
                                 label={name}
-                                variant={name === sortTag ? 'filled' : 'outlined'}
+                                variant={name === sortTag ? "filled" : "outlined"}
                                 onClick={() => {
-                                    setSortTag(sortTag !== name ? name : '');
+                                    setSortTag(sortTag !== name ? name : "");
                                 }}
                             />
                         ) : (
-                            <Skeleton
-                                variant="rectangular"
-                                width={90}
-                                height={32}
-                                style={{ borderRadius: '16px' }}
-                            />
+                            <Skeleton variant="rectangular" width={90} height={32} style={{ borderRadius: "16px" }} />
                         )}
                     </div>
                 ))}

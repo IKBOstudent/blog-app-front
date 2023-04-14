@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axiosConfig";
-import { EStatus } from "../AuthSlice/types";
+import { EStatus } from "../types.common";
 import { ITagsState } from "./types";
 
 export const fetchTags = createAsyncThunk<string[]>("tags/fetchTags", async () => {

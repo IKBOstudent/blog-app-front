@@ -1,9 +1,9 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { Backdrop, Button, CircularProgress, Paper, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link, useNavigate, Navigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import axios from "../../axios";
+import axios from "axiosConfig";
 
 import styles from "./AddPost.module.scss";
 
@@ -17,14 +17,13 @@ export const AddPost = () => {
 
     const [isChangingFile, setChangingFile] = React.useState(false);
 
-    const inputFileRef = React.useRef();
+    const inputFileRef = React.useRef<HTMLInputElement>(null);
 
     const {
         register,
         handleSubmit,
         setValue,
         resetField,
-        getValues,
         formState: { errors, isValid },
     } = useForm({
         defaultValues: {
@@ -35,15 +34,20 @@ export const AddPost = () => {
         mode: "onChange",
     });
 
-    const handleChangeFile = async event => {
+    const handleChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
         try {
             setChangingFile(true);
+
+            if (event.target.files === null) {
+                return console.warn("No file uploaded");
+            }
 
             const formData = new FormData();
             const file = event.target.files[0];
             if (file) {
                 formData.append("image", file);
                 const { data } = await axios.post("/upload", formData);
+                console.log(data);
                 setImageUrl(String(process.env.REACT_APP_API_URL) + data.url);
             }
         } catch (err) {
@@ -73,7 +77,7 @@ export const AddPost = () => {
         }
     }, [params.id]);
 
-    const onSubmit = async ({ title, text, tags }) => {
+    const onSubmit = async ({ title, text, tags }: { title: string; text: string; tags: string }) => {
         try {
             setLoading(true);
             console.log({ title, text, tags });
@@ -87,11 +91,10 @@ export const AddPost = () => {
                 imageUrl,
             };
 
-            const { data } = params.id
-                ? await axios.patch("/posts/" + params.id, fields)
-                : await axios.post("/posts", fields);
+            const { data } = await axios.patch(`/posts/${params.id || ""}`, fields);
 
             const id = params.id || data.post._id;
+
             navigate(`/posts/${id}`);
         } catch (err) {
             console.warn(err);
@@ -108,10 +111,11 @@ export const AddPost = () => {
             <Backdrop sx={{ zIndex: theme => theme.zIndex.drawer + 1 }} open={isChangingFile || isLoading}>
                 <CircularProgress color="secondary" />
             </Backdrop>
-            <Button onClick={() => inputFileRef.current.click()} variant="outlined" size="large">
+            <Button onClick={() => inputFileRef.current?.click()} variant="outlined" size="large">
                 Load image
             </Button>
             <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden />
+
             {imageUrl ? (
                 <>
                     <Button

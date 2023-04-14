@@ -1,14 +1,28 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axiosConfig";
 
-import { EStatus, IUser, IAuthState } from "./types";
+import { IUser, IAuthState } from "./types";
+import { EStatus } from "../types.common";
 
-export const fetchAuthLogin = createAsyncThunk<IUser, string>("auth/fetchAuthLogin", async params => {
+export const fetchAuthLogin = createAsyncThunk<
+    IUser,
+    {
+        email: string;
+        password: string;
+    }
+>("auth/fetchAuthLogin", async params => {
     const response = await axios.post("/auth/login", params);
     return response.data as IUser;
 });
 
-export const fetchAuthRegister = createAsyncThunk<IUser, string>("auth/fetchAuthLogin", async params => {
+export const fetchAuthRegister = createAsyncThunk<
+    IUser,
+    {
+        fullName: string;
+        email: string;
+        password: string;
+    }
+>("auth/fetchAuthLogin", async params => {
     const response = await axios.post("/auth/register", params);
     return response.data as IUser;
 });
@@ -34,7 +48,7 @@ const AuthSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            // get all
+            // login
             .addCase(fetchAuthLogin.pending, state => {
                 state.status = EStatus.LOADING;
             })
@@ -46,7 +60,7 @@ const AuthSlice = createSlice({
                 state.status = EStatus.ERROR;
             })
 
-            // get by tag
+            // register
             .addCase(fetchAuthRegister.pending, state => {
                 state.status = EStatus.LOADING;
             })
@@ -58,7 +72,7 @@ const AuthSlice = createSlice({
                 state.status = EStatus.ERROR;
             })
 
-            // remove
+            // check auth
             .addCase(fetchAuthMe.pending, state => {
                 state.status = EStatus.LOADING;
             })

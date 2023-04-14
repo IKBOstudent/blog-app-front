@@ -8,14 +8,17 @@ import styles from "./Home.module.scss";
 import { Post, TagsBlock } from "components";
 
 import { TagContext } from "App";
-import { fetchPosts, fetchPostsByTag, fetchTags } from "redux/slices/PostsSlice";
+import { fetchPosts, fetchPostsByTag } from "redux/slices/PostsSlice";
+import { fetchTags } from "redux/slices/TagsSlice";
 import { useAppDispatch, useAppSelector } from "hooks";
+import { PostSkeleton } from "components/Post/PostSkeleton";
 
 export const Home = () => {
     const dispatch = useAppDispatch();
 
-    const { posts, tags } = useAppSelector(state => state.PostsReducer);
-    const userData = useAppSelector(state => state.AuthReducer.data);
+    const posts = useAppSelector(state => state.PostsReducer);
+    const tags = useAppSelector(state => state.TagsReducer);
+    const userData = useAppSelector(state => state.AuthReducer.user);
     const isAuth = Boolean(userData);
 
     const { sortTag } = useContext(TagContext);
@@ -27,9 +30,10 @@ export const Home = () => {
 
     React.useEffect(() => {
         if (sortTag) {
-            setSortType("latest");
+            // search by tag
             dispatch(fetchPostsByTag(sortTag));
         } else {
+            // search by sort type
             dispatch(fetchPosts(sortType));
             dispatch(fetchTags());
         }
@@ -37,31 +41,34 @@ export const Home = () => {
 
     return (
         <>
-            {postsLoading || posts.items.length ? (
+            {postsLoading || posts.items.length ? ( // sort tabs
                 <Tabs className={styles.tabs} value={sortType === "latest" ? 0 : 1}>
                     <Tab onClick={() => setSortType("latest")} label="New" />
                     {!sortTag && <Tab onClick={() => setSortType("popular")} label="Popular" />}
                 </Tabs>
             ) : null}
 
-            {tagsLoading || posts.items.length > 0 ? <TagsBlock items={tags.items} isLoading={tagsLoading} /> : null}
+            {tagsLoading || posts.items.length ? ( // tags tabs
+                <TagsBlock items={tags.items} isLoading={tagsLoading} />
+            ) : null}
 
             <div>
                 {postsLoading ? (
-                    [1, 2].map((_, i) => <Post key={i} isLoading />)
+                    [...Array(3)].map((_, i) => <PostSkeleton isFullPost={false} />)
                 ) : posts.items.length ? (
-                    posts.items.map((obj, i) => (
+                    posts.items.map((post, i) => (
                         <Post
                             key={i}
-                            id={obj._id}
-                            title={obj.title}
-                            imageUrl={obj.imageUrl}
-                            author={obj.author}
-                            createdAt={obj.createdAt}
-                            viewsCount={obj.viewsCount}
-                            commentsCount={obj.comments.length}
-                            tags={obj.tags}
-                            isEditable={userData?._id === obj.author._id}
+                            _id={post._id}
+                            author={post.author}
+                            title={post.title}
+                            imageUrl={post.imageUrl}
+                            tags={post.tags}
+                            viewsCount={post.viewsCount}
+                            commentsCount={post.comments.length}
+                            createdAt={post.createdAt}
+                            isFullPost={true}
+                            isEditable={userData?._id === post.author._id}
                         />
                     ))
                 ) : (

@@ -1,8 +1,9 @@
+import React from "react";
 import { Skeleton, Stack } from "@mui/material";
 
-import styles from "./Post.module.scss";
+import styles from "./PostSkeleton.module.scss";
 
-export const PostSkeleton = ({ isFullPost }) => {
+export const PostSkeleton = ({ isFullPost }: { isFullPost: boolean }) => {
     return (
         <div className={isFullPost ? styles.skeletonFull : styles.skeleton}>
             <Stack>

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axiosConfig";
 import { idText } from "typescript";
 
-import { EStatus } from "../AuthSlice/types";
+import { EStatus } from "../types.common";
 import { IPost, IPostsState } from "./types";
 
 export const fetchPosts = createAsyncThunk<IPost[], string>("posts/fetchPosts", async sortType => {

@@ -1,12 +1,8 @@
-export enum EStatus {
-    LOADING = "loading",
-    SUCCESS = "success",
-    ERROR = "error",
-}
+import { EStatus } from "../types.common";
 
 export interface IUser {
     _id: string;
-    fullname: string;
+    fullName: string;
     email: string;
     token?: string;
 }

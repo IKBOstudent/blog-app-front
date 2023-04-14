@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "hooks";
 
 export const Registration = () => {
     const dispatch = useAppDispatch();
-    const isAuth = useAppSelector(state => Boolean(state.AuthReducer.data));
+    const isAuth = useAppSelector(state => Boolean(state.AuthReducer.user));
 
     const [error, setError] = React.useState({ name: "", status: false });
 
@@ -31,21 +31,21 @@ export const Registration = () => {
         mode: "onChange",
     });
 
-    const onSubmit = async values => {
+    const onSubmit = async (values: { fullName: string; email: string; password: string }) => {
         try {
             setLoading(true);
             const response = await dispatch(fetchAuthRegister(values));
-
+            console.log(response);
             if (!response.payload) {
                 setError({ name: "Invalid credentials", status: true });
                 return alert("Registration failed :(");
             }
 
-            if ("token" in response.payload) {
-                window.localStorage.setItem("token", response.payload.token);
-            } else {
-                alert("Token porblem");
-            }
+            // if ("token" in response.payload) {
+            //     window.localStorage.setItem("token", response.payload.token);
+            // } else {
+            //     alert("Token porblem");
+            // }
         } catch (err) {
             console.warn(err);
             alert(err);

@@ -6,7 +6,7 @@ import styles from "./AddComment.module.scss";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "hooks";
 
-export const AddComment = ({ onNewComment }) => {
+export const AddComment = ({ onNewComment }: { onNewComment: () => Promise<void> }) => {
     const user = useAppSelector(state => state.AuthReducer.user);
 
     const [text, setText] = useState("");
@@ -14,7 +14,7 @@ export const AddComment = ({ onNewComment }) => {
 
     const [isLoading, setLoading] = React.useState(false);
 
-    const onSubmit = async (event: SubmitEvent) => {
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
             setLoading(true);

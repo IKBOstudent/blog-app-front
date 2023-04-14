@@ -4,7 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Container from "@mui/material/Container";
 
 import { Header } from "components";
-import { Home, FullPost, Registration, Login, AddPost } from "pages";
+import { Home, PostPage, Registration, Login, AddPost } from "pages";
 
 import { fetchAuthMe } from "redux/slices/AuthSlice";
 import { useAppDispatch, useAppSelector } from "hooks";
@@ -18,7 +18,7 @@ export const TagContext = React.createContext({} as ITagContext);
 
 const App: React.FC = () => {
     const dispatch = useAppDispatch();
-    const isAuth = useAppSelector(state => Boolean(state.AuthReducer.data));
+    const isAuth = useAppSelector(state => Boolean(state.AuthReducer.user));
 
     const [sortTag, setSortTag] = React.useState("");
 
@@ -33,7 +33,7 @@ const App: React.FC = () => {
                 <Container maxWidth="lg">
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/posts/:id" element={<FullPost />} />
+                        <Route path="/posts/:id" element={<PostPage />} />
                         {isAuth ? <Route path="/posts/:id/edit" element={<AddPost />} /> : null}
                         {isAuth ? <Route path="/add-post" element={<AddPost />} /> : null}
                         <Route path="/login" element={<Login />} />
