@@ -33,22 +33,16 @@ export const Login = () => {
     const onSubmit = async (values: { email: string; password: string }) => {
         try {
             setLoading(true);
-            const data = await dispatch(fetchAuthLogin(values));
-            console.log(data);
+            const data = await dispatch(fetchAuthLogin(values)).unwrap();
 
-            if (!data.payload) {
-                setError({ name: "Invalid credentials", status: true });
-                return;
+            if (data.token) {
+                window.localStorage.setItem("token", data.token);
+            } else {
+                alert("Server Error! Didn't receive auth token");
             }
-
-            // if ("token" in data.payload) {
-            //     window.localStorage.setItem("token", data.payload.token);
-            // } else {
-            //     alert("Server Error! JWT Token porblem");
-            // }
         } catch (err) {
             console.warn(err);
-            alert(err);
+            setError({ name: "Invalid credentials", status: true });
         } finally {
             setLoading(false);
         }

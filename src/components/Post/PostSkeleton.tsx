@@ -1,16 +1,21 @@
-import React from "react";
-import { Skeleton, Stack } from "@mui/material";
+import React from 'react';
+import { Skeleton, Stack } from '@mui/material';
 
-import styles from "./PostSkeleton.module.scss";
+import styles from './PostSkeleton.module.scss';
 
-export const PostSkeleton = ({ isFullPost }: { isFullPost: boolean }) => {
+export const PostSkeleton = () => {
     return (
-        <div className={isFullPost ? styles.skeletonFull : styles.skeleton}>
+        <div className={styles.skeleton}>
             <Stack>
                 <Skeleton variant="rectangular" height={240} />
                 <div className={styles.skeletonContent}>
                     <div className={styles.skeletonUser}>
-                        <Skeleton variant="circular" width={30} height={30} style={{ marginRight: 10 }} />
+                        <Skeleton
+                            variant="circular"
+                            width={30}
+                            height={30}
+                            style={{ marginRight: 10 }}
+                        />
                         <div className={styles.skeletonUserDetails}>
                             <Skeleton variant="text" width={60} height={20} />
                             <Skeleton variant="text" width={100} height={15} />

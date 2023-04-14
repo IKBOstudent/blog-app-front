@@ -34,24 +34,20 @@ export const Registration = () => {
     const onSubmit = async (values: { fullName: string; email: string; password: string }) => {
         try {
             setLoading(true);
-            const response = await dispatch(fetchAuthRegister(values));
-            console.log(response);
-            if (!response.payload) {
-                setError({ name: "Invalid credentials", status: true });
-                return alert("Registration failed :(");
-            }
+            const data = await dispatch(fetchAuthRegister(values)).unwrap();
 
-            // if ("token" in response.payload) {
-            //     window.localStorage.setItem("token", response.payload.token);
-            // } else {
-            //     alert("Token porblem");
-            // }
+            if (data.token) {
+                window.localStorage.setItem("token", data.token);
+            } else {
+                alert("Server Error! Didn't receive auth token");
+            }
         } catch (err) {
             console.warn(err);
-            alert(err);
+            setError({ name: "Invalid credentials", status: true });
         } finally {
             setLoading(false);
         }
+        
     };
 
     if (isAuth) {

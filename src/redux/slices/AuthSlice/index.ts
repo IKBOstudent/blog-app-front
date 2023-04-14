@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axiosConfig";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axiosConfig';
 
-import { IUser, IAuthState } from "./types";
-import { EStatus } from "../types.common";
+import { IUser, IAuthState } from './types';
+import { EStatus } from '../types.common';
 
 export const fetchAuthLogin = createAsyncThunk<
     IUser,
@@ -10,9 +10,13 @@ export const fetchAuthLogin = createAsyncThunk<
         email: string;
         password: string;
     }
->("auth/fetchAuthLogin", async params => {
-    const response = await axios.post("/auth/login", params);
-    return response.data as IUser;
+>('auth/fetchAuthLogin', async (params, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.post<IUser>('/auth/login', params);
+        return data;
+    } catch (err) {
+        return rejectWithValue(err.response.data);
+    }
 });
 
 export const fetchAuthRegister = createAsyncThunk<
@@ -22,15 +26,26 @@ export const fetchAuthRegister = createAsyncThunk<
         email: string;
         password: string;
     }
->("auth/fetchAuthLogin", async params => {
-    const response = await axios.post("/auth/register", params);
-    return response.data as IUser;
+>('auth/fetchAuthRegister', async (params, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.post<IUser>('/auth/register', params);
+        return data;
+    } catch (err) {
+        return rejectWithValue(err.response.data);
+    }
 });
 
-export const fetchAuthMe = createAsyncThunk<IUser>("auth/fetchAuthMe", async () => {
-    const response = await axios.get("/auth/me");
-    return response.data as IUser;
-});
+export const fetchAuthMe = createAsyncThunk<IUser>(
+    'auth/fetchAuthMe',
+    async (_, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get<IUser>('/auth/me');
+            return data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
+    },
+);
 
 const initialState: IAuthState = {
     user: null,
@@ -38,49 +53,49 @@ const initialState: IAuthState = {
 };
 
 const AuthSlice = createSlice({
-    name: "auth",
+    name: 'auth',
     initialState,
     reducers: {
-        logout: state => {
+        logout: (state) => {
             state.user = null;
             state.status = EStatus.ERROR;
         },
     },
-    extraReducers: builder => {
+    extraReducers: (builder) => {
         builder
             // login
-            .addCase(fetchAuthLogin.pending, state => {
+            .addCase(fetchAuthLogin.pending, (state) => {
                 state.status = EStatus.LOADING;
             })
             .addCase(fetchAuthLogin.fulfilled, (state, action) => {
                 state.user = action.payload;
                 state.status = EStatus.SUCCESS;
             })
-            .addCase(fetchAuthLogin.rejected, state => {
+            .addCase(fetchAuthLogin.rejected, (state) => {
                 state.status = EStatus.ERROR;
             })
 
             // register
-            .addCase(fetchAuthRegister.pending, state => {
+            .addCase(fetchAuthRegister.pending, (state) => {
                 state.status = EStatus.LOADING;
             })
             .addCase(fetchAuthRegister.fulfilled, (state, action) => {
                 state.user = action.payload;
                 state.status = EStatus.SUCCESS;
             })
-            .addCase(fetchAuthRegister.rejected, state => {
+            .addCase(fetchAuthRegister.rejected, (state) => {
                 state.status = EStatus.ERROR;
             })
 
             // check auth
-            .addCase(fetchAuthMe.pending, state => {
+            .addCase(fetchAuthMe.pending, (state) => {
                 state.status = EStatus.LOADING;
             })
             .addCase(fetchAuthMe.fulfilled, (state, action) => {
                 state.user = action.payload;
                 state.status = EStatus.SUCCESS;
             })
-            .addCase(fetchAuthMe.rejected, state => {
+            .addCase(fetchAuthMe.rejected, (state) => {
                 state.status = EStatus.ERROR;
             });
     },

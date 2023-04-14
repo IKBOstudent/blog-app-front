@@ -1,32 +1,32 @@
-import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import { Button, Tab, Tabs, Typography } from "@mui/material";
+import { Button, Tab, Tabs, Typography } from '@mui/material';
 
-import styles from "./Home.module.scss";
+import styles from './Home.module.scss';
 
-import { Post, TagsBlock } from "components";
+import { Post, TagsBlock } from 'components';
 
-import { TagContext } from "App";
-import { fetchPosts, fetchPostsByTag } from "redux/slices/PostsSlice";
-import { fetchTags } from "redux/slices/TagsSlice";
-import { useAppDispatch, useAppSelector } from "hooks";
-import { PostSkeleton } from "components/Post/PostSkeleton";
+import { TagContext } from 'App';
+import { fetchPosts, fetchPostsByTag } from 'redux/slices/PostsSlice';
+import { fetchTags } from 'redux/slices/TagsSlice';
+import { useAppDispatch, useAppSelector } from 'hooks';
+import { PostSkeleton } from 'components/Post/PostSkeleton';
 
 export const Home = () => {
     const dispatch = useAppDispatch();
 
-    const posts = useAppSelector(state => state.PostsReducer);
-    const tags = useAppSelector(state => state.TagsReducer);
-    const userData = useAppSelector(state => state.AuthReducer.user);
+    const posts = useAppSelector((state) => state.PostsReducer);
+    const tags = useAppSelector((state) => state.TagsReducer);
+    const userData = useAppSelector((state) => state.AuthReducer.user);
     const isAuth = Boolean(userData);
 
     const { sortTag } = useContext(TagContext);
 
-    const [sortType, setSortType] = useState("latest");
+    const [sortType, setSortType] = useState('latest');
 
-    const postsLoading = posts.status === "loading";
-    const tagsLoading = tags.status === "loading";
+    const postsLoading = posts.status === 'loading';
+    const tagsLoading = tags.status === 'loading';
 
     React.useEffect(() => {
         if (sortTag) {
@@ -39,12 +39,22 @@ export const Home = () => {
         }
     }, [sortType, sortTag]);
 
+    if (posts.status === 'error') {
+        return (
+            <div className={styles.noPosts}>
+                <Typography variant="h5" style={{ color: '#ffffff', fontWeight: 700 }}>
+                    Posts loading failed. Try again later
+                </Typography>
+            </div>
+        );
+    }
+
     return (
         <>
             {postsLoading || posts.items.length ? ( // sort tabs
-                <Tabs className={styles.tabs} value={sortType === "latest" ? 0 : 1}>
-                    <Tab onClick={() => setSortType("latest")} label="New" />
-                    {!sortTag && <Tab onClick={() => setSortType("popular")} label="Popular" />}
+                <Tabs className={styles.tabs} value={sortType === 'latest' ? 0 : 1}>
+                    <Tab onClick={() => setSortType('latest')} label="New" />
+                    {!sortTag && <Tab onClick={() => setSortType('popular')} label="Popular" />}
                 </Tabs>
             ) : null}
 
@@ -54,7 +64,7 @@ export const Home = () => {
 
             <div>
                 {postsLoading ? (
-                    [...Array(3)].map((_, i) => <PostSkeleton isFullPost={false} />)
+                    [...Array(3)].map((_, i) => <PostSkeleton key={i} />)
                 ) : posts.items.length ? (
                     posts.items.map((post, i) => (
                         <Post
@@ -67,13 +77,13 @@ export const Home = () => {
                             viewsCount={post.viewsCount}
                             commentsCount={post.comments.length}
                             createdAt={post.createdAt}
-                            isFullPost={true}
+                            isFullPost={false}
                             isEditable={userData?._id === post.author._id}
                         />
                     ))
                 ) : (
                     <div className={styles.noPosts}>
-                        <Typography variant="h5" style={{ color: "#ffffff", fontWeight: 700 }}>
+                        <Typography variant="h5" style={{ color: '#ffffff', fontWeight: 700 }}>
                             No posts yet
                         </Typography>
                         {isAuth && (
