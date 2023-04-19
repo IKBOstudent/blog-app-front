@@ -22,6 +22,9 @@
 .image {
     width: 100%;
     margin-top: 30px;
+    min-height: 200px;
+    max-height: 500px;
+    object-fit: cover;
 }
 
 .description {

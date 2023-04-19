@@ -88,7 +88,6 @@ export const AddPost = () => {
     }) => {
         try {
             setLoading(true);
-            console.log({ title, text, tags });
 
             const tagsArray = (tags + '').split(' ');
 

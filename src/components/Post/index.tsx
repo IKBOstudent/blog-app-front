@@ -1,19 +1,19 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import clsx from "clsx";
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import clsx from 'clsx';
 
-import { ChatBubbleOutlineOutlined, Delete, Edit, RemoveRedEyeOutlined } from "@mui/icons-material";
-import { Button, Paper, Dialog, DialogContent, DialogActions } from "@mui/material";
+import { ChatBubbleOutlineOutlined, Delete, Edit, RemoveRedEyeOutlined } from '@mui/icons-material';
+import { Button, Paper, Dialog, DialogContent, DialogActions } from '@mui/material';
 
-import { useAppDispatch } from "hooks";
+import { useAppDispatch } from 'hooks';
 
-import { UserInfo } from "..";
-import { TagContext } from "App";
-import { fetchRemovePost } from "redux/slices/PostsSlice";
+import { UserInfo } from '..';
+import { TagContext } from 'App';
+import { fetchRemovePost } from 'redux/slices/PostsSlice';
 
-import styles from "./Post.module.scss";
+import styles from './Post.module.scss';
 
-import { IUser } from "redux/slices/AuthSlice/types";
+import { IUser } from 'redux/slices/AuthSlice/types';
 
 export interface PostProps {
     _id: string;
@@ -50,17 +50,6 @@ export const Post = ({
     const navigate = useNavigate();
 
     const [isOpenModal, setOpenModal] = React.useState(false);
-    const onClickRemove = async () => {
-        try {
-            await dispatch(fetchRemovePost(_id));
-
-            setOpenModal(false);
-            navigate("/");
-        } catch (err) {
-            console.warn(err);
-            alert(err);
-        }
-    };
 
     const DeletePostModal = () => {
         return (
@@ -87,7 +76,7 @@ export const Post = ({
                     </Button>
                 </Link>
                 <Button onClick={() => setOpenModal(true)}>
-                    <Delete color="secondary" />
+                    <Delete color="secondary" style={{ pointerEvents: 'none' }} />
                 </Button>
             </Paper>
         );
@@ -95,57 +84,74 @@ export const Post = ({
 
     const PostImage = () => {
         return (
-            <Link to={`/posts/${_id}`} style={isFullPost ? { pointerEvents: "none" } : undefined}>
-                <img
-                    height={isFullPost ? undefined : 240}
-                    className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
-                    src={imageUrl}
-                    alt={title}
-                />
-            </Link>
+            <img
+                height={isFullPost ? undefined : 240}
+                className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
+                src={imageUrl}
+                alt={title}
+            />
         );
     };
 
+    const onClickRemove = async () => {
+        try {
+            await dispatch(fetchRemovePost(_id));
+
+            setOpenModal(false);
+            navigate('/');
+        } catch (err) {
+            console.warn(err);
+            alert(err);
+        }
+    };
+
+    const onLinkClick = (event: React.MouseEvent<HTMLAnchorElement> & { target: HTMLElement }) => {
+        if (event.target.matches('button')) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    };
+
     return (
-        <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
-            <DeletePostModal />
+        <Link to={`/posts/${_id}`} onClick={onLinkClick}>
+            <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
+                <DeletePostModal />
 
-            {isEditable ? <EditButtons /> : null}
+                {isEditable ? <EditButtons /> : null}
 
-            {imageUrl ? <PostImage /> : null}
+                {imageUrl ? <PostImage /> : null}
 
-            <div className={styles.wrapper}>
-                <UserInfo author={author} additionalText={createdAt} />
+                <div className={styles.wrapper}>
+                    <UserInfo author={author} additionalText={createdAt} />
 
-                <div className={styles.indention}>
-                    <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
-                        {isFullPost ? title : <Link to={`/posts/${_id}`}>{title}</Link>}
-                    </h2>
+                    <div className={styles.indention}>
+                        <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
+                            {title}
+                        </h2>
 
-                    <ul className={styles.tags}>
-                        {tags.map((name, i) => (
-                            <li key={i}>
-                                <div className={styles.tag} onClick={() => setSortTag(name)}>
-                                    #{name}
-                                </div>
+                        <ul className={styles.tags}>
+                            {tags.map((name, i) => (
+                                <li key={i}>
+                                    <button onClick={() => setSortTag(name)}>#{name}</button>
+                                </li>
+                            ))}
+                        </ul>
+
+                        {children ? <div className={styles.content}>{children}</div> : null}
+
+                        <ul className={styles.postDetails}>
+                            <li>
+                                <RemoveRedEyeOutlined />
+                                <span>{viewsCount}</span>
                             </li>
-                        ))}
-                    </ul>
-
-                    {children ? <div className={styles.content}>{children}</div> : null}
-
-                    <ul className={styles.postDetails}>
-                        <li>
-                            <RemoveRedEyeOutlined />
-                            <span>{viewsCount}</span>
-                        </li>
-                        <li>
-                            <ChatBubbleOutlineOutlined />
-                            <span>{commentsCount}</span>
-                        </li>
-                    </ul>
+                            <li>
+                                <ChatBubbleOutlineOutlined />
+                                <span>{commentsCount}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };

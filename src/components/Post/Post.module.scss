@@ -80,7 +80,6 @@ $primary: #7bbabd;
     padding: 0;
 
     li {
-        cursor: pointer;
         display: inline-block;
         font-size: 14px;
         margin-right: 15px;
@@ -88,6 +87,14 @@ $primary: #7bbabd;
 
         &:hover {
             opacity: 1;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font: inherit;
+            color: #ffffff;
         }
     }
 }

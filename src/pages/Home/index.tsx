@@ -64,7 +64,7 @@ export const Home = () => {
 
             <div>
                 {postsLoading ? (
-                    [...Array(3)].map((_, i) => <PostSkeleton key={i} />)
+                    [...Array(3)].map((_, i) => <PostSkeleton key={i} isFullPost={false} />)
                 ) : posts.items.length ? (
                     posts.items.map((post, i) => (
                         <Post

@@ -36,7 +36,7 @@ export const PostPage = () => {
     if (isLoading) {
         return (
             <>
-                <PostSkeleton />
+                <PostSkeleton isFullPost={true} />
                 <CommentsBlock isLoading={true} />
             </>
         );

@@ -3,11 +3,11 @@ import { Skeleton, Stack } from '@mui/material';
 
 import styles from './PostSkeleton.module.scss';
 
-export const PostSkeleton = () => {
+export const PostSkeleton = ({ isFullPost }: { isFullPost: boolean }) => {
     return (
         <div className={styles.skeleton}>
             <Stack>
-                <Skeleton variant="rectangular" height={240} />
+                <Skeleton variant="rectangular" height={isFullPost ? 500 : 240} />
                 <div className={styles.skeletonContent}>
                     <div className={styles.skeletonUser}>
                         <Skeleton
