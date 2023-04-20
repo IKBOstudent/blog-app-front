@@ -1,7 +1,11 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: String(process.env.REACT_APP_API_URL),
+    baseURL: "/",
+    proxy: {
+        host: "server",
+        port: 80,
+    },
 });
 
 instance.interceptors.request.use(config => {

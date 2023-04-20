@@ -19,7 +19,7 @@ export const AddComment = ({ onNewComment }: { onNewComment: () => Promise<void>
         try {
             setLoading(true);
             if (text.trim()) {
-                await axios.patch("/posts/" + params.id + "/comment", { newComment: text.trim() });
+                await axios.patch("api/posts/" + params.id + "/comment", { newComment: text.trim() });
                 setText("");
                 onNewComment();
             }

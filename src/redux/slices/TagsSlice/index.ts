@@ -4,7 +4,7 @@ import { EStatus } from "../types.common";
 import { ITagsState } from "./types";
 
 export const fetchTags = createAsyncThunk<string[]>("tags/fetchTags", async () => {
-    const { data } = await axios.get("/tags");
+    const { data } = await axios.get("api/tags");
     return data.tags;
 });
 
