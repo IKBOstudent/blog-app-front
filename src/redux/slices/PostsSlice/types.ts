@@ -1,5 +1,5 @@
-import { IUser } from "../AuthSlice/types";
-import { EStatus } from "../types.common";
+import { IUser } from '../AuthSlice/types';
+import { EStatus } from '../types.common';
 
 export interface IComment {
     _id: string;
@@ -13,6 +13,7 @@ export interface IPost {
     title: string;
     text: string;
     imageUrl: string;
+    blurHash: string;
     tags: string[];
     viewsCount: number;
     comments: IComment[];

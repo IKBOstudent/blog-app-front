@@ -7,7 +7,7 @@ import { Button, Paper, Dialog, DialogContent, DialogActions } from '@mui/materi
 
 import { useAppDispatch } from 'hooks';
 
-import { UserInfo } from '..';
+import { ImageWithBlur, UserInfo } from '..';
 import { TagContext } from 'App';
 import { fetchRemovePost } from 'redux/slices/PostsSlice';
 
@@ -20,6 +20,7 @@ export interface PostProps {
     author: IUser;
     title: string;
     imageUrl: string;
+    blurHash: string;
     tags: string[];
     viewsCount: number;
     commentsCount: number;
@@ -36,6 +37,7 @@ export const Post = ({
     author,
     title,
     imageUrl,
+    blurHash,
     tags,
     viewsCount,
     commentsCount,
@@ -82,17 +84,6 @@ export const Post = ({
         );
     };
 
-    const PostImage = () => {
-        return (
-            <img
-                height={isFullPost ? undefined : 240}
-                className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
-                src={imageUrl}
-                alt={title}
-            />
-        );
-    };
-
     const onClickRemove = async () => {
         try {
             await dispatch(fetchRemovePost(_id));
@@ -119,7 +110,14 @@ export const Post = ({
 
                 {isEditable ? <EditButtons /> : null}
 
-                {imageUrl ? <PostImage /> : null}
+                {imageUrl ? (
+                    <ImageWithBlur
+                        src={imageUrl}
+                        hash={blurHash}
+                        alt={title}
+                        styling={clsx(styles.image, { [styles.imageFull]: isFullPost })}
+                    />
+                ) : null}
 
                 <div className={styles.wrapper}>
                     <UserInfo author={author} additionalText={createdAt} />

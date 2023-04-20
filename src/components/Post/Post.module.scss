@@ -23,6 +23,10 @@ $primary: #7bbabd;
         min-height: 200px;
         max-height: 500px;
     }
+
+    canvas {
+        object-fit: cover;
+    }
 }
 
 .wrapper {

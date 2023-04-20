@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { Backdrop, Button, CircularProgress, Paper, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link, useNavigate, Navigate, useParams } from 'react-router-dom';
@@ -48,7 +48,7 @@ export const AddPost = () => {
                 formData.append('image', file);
                 const { data } = await axios.post('/upload', formData);
                 console.log(data);
-                setImageUrl(String(process.env.REACT_APP_API_URL) + data.url);
+                setImageUrl(data.image.url);
             }
         } catch (err) {
             console.warn(err);

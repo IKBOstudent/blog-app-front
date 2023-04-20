@@ -2,6 +2,7 @@
     "name": "frontend",
     "version": "0.1.0",
     "private": true,
+    "proxy": "https://blog-app-server-4kpq.onrender.com/",
     "dependencies": {
         "@emotion/react": "^11.10.0",
         "@emotion/styled": "^11.10.0",
@@ -12,10 +13,12 @@
         "@testing-library/react": "^13.3.0",
         "@testing-library/user-event": "^13.5.0",
         "axios": "^0.27.2",
+        "blurhash": "^2.0.5",
         "clsx": "^1.2.1",
         "dotenv": "^16.0.1",
         "lodash": "^4.17.21",
         "react": "^18.2.0",
+        "react-blurhash": "^0.3.0",
         "react-dom": "^18.2.0",
         "react-hook-form": "^7.34.2",
         "react-markdown": "^8.0.3",
@@ -51,15 +54,15 @@
         ]
     },
     "devDependencies": {
-        "@types/react-redux": "^7.1.24",
-        "@types/react-router-dom": "^5.3.3",
-        "@types/validator": "^13.7.10",
         "@types/lodash": "^4.14.194",
         "@types/node": "^18.11.16",
         "@types/react": "^18.0.26",
         "@types/react-dom": "^18.0.9",
+        "@types/react-redux": "^7.1.24",
+        "@types/react-router-dom": "^5.3.3",
+        "@types/validator": "^13.7.10",
         "prettier": "^2.7.1",
-        "webpack-cli": "^4.10.0",
-        "typescript": "^4.9.4"
+        "typescript": "^4.9.4",
+        "webpack-cli": "^4.10.0"
     }
 }

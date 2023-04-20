@@ -73,6 +73,7 @@ export const Home = () => {
                             author={post.author}
                             title={post.title}
                             imageUrl={post.imageUrl}
+                            blurHash={post.blurHash}
                             tags={post.tags}
                             viewsCount={post.viewsCount}
                             commentsCount={post.comments.length}
