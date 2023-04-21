@@ -16,7 +16,6 @@ export const ImageWithBlur = ({
     const ref = React.useRef<HTMLImageElement>(null);
 
     const onLoad = () => {
-        console.log('loaded');
         setLoaded(true);
     };
 

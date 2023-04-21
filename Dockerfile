@@ -4,12 +4,13 @@ FROM node:16-alpine as build
 WORKDIR /app
 # ENV PATH /app/node_modules/.bin:$PATH
 
-# COPY package*.json /app/
+COPY package*.json ./
+# COPY ./build /app/build
+# COPY ./nginx /app/nginx
 
-# RUN npm install
-COPY ./build /app/build
-COPY ./nginx /app/nginx
-# RUN npm run build
+RUN npm install
+COPY . .
+RUN npm run build
 
 # stage 1 nginx server
 FROM nginx:stable-alpine

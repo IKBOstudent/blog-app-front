@@ -1,17 +1,17 @@
-import React from "react";
-import { Backdrop, Button, CircularProgress, Paper, TextField } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Link, useNavigate, Navigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import axios from "axiosConfig";
+import React from 'react';
+import { Backdrop, Button, CircularProgress, Paper, TextField } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Link, useNavigate, Navigate, useParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import axios from 'axiosConfig';
 
-import styles from "./AddPost.module.scss";
+import styles from './AddPost.module.scss';
 
 export const AddPost = () => {
     const params = useParams();
     const navigate = useNavigate();
 
-    const [imageUrl, setImageUrl] = React.useState("");
+    const [imageUrl, setImageUrl] = React.useState('');
 
     const [isLoading, setLoading] = React.useState(false);
 
@@ -27,11 +27,11 @@ export const AddPost = () => {
         formState: { errors, isValid },
     } = useForm({
         defaultValues: {
-            title: "",
-            text: "",
-            tags: "",
+            title: '',
+            text: '',
+            tags: '',
         },
-        mode: "onChange",
+        mode: 'onChange',
     });
 
     const handleChangeFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,14 +39,14 @@ export const AddPost = () => {
             setChangingFile(true);
 
             if (event.target.files === null) {
-                return console.warn("No file uploaded");
+                return console.warn('No file uploaded');
             }
 
             const formData = new FormData();
             const file = event.target.files[0];
             if (file) {
-                formData.append("image", file);
-                const { data } = await axios.post("api/upload", formData);
+                formData.append('image', file);
+                const { data } = await axios.post('api/upload', formData);
                 console.log(data);
                 setImageUrl(data.image.url);
             }
@@ -62,26 +62,34 @@ export const AddPost = () => {
         if (params.id) {
             setLoading(true);
             axios
-                .get(`/posts/post/${params.id}`)
+                .get(`api/posts/post/${params.id}`)
                 .then(({ data }) => {
-                    setValue("title", data.post.title);
-                    setValue("text", data.post.text);
-                    setValue("tags", data.post.tags.join(" "));
+                    setValue('title', data.post.title);
+                    setValue('text', data.post.text);
+                    setValue('tags', data.post.tags.join(' '));
                     setImageUrl(data.post.imageUrl);
                 })
-                .catch(err => {
-                    console.warn("unable to post", err);
+                .catch((err) => {
+                    console.warn('unable to post', err);
                     alert(err);
                 })
                 .finally(() => setLoading(false));
         }
     }, [params.id]);
 
-    const onSubmit = async ({ title, text, tags }: { title: string; text: string; tags: string }) => {
+    const onSubmit = async ({
+        title,
+        text,
+        tags,
+    }: {
+        title: string;
+        text: string;
+        tags: string;
+    }) => {
         try {
             setLoading(true);
 
-            const tagsArray = (tags + "").split(" ");
+            const tagsArray = (tags + '').split(' ');
 
             const fields = {
                 title,
@@ -91,8 +99,8 @@ export const AddPost = () => {
             };
 
             const { data } = params.id
-                ? await axios.patch("api/posts/" + params.id, fields)
-                : await axios.post("api/posts", fields);
+                ? await axios.patch('api/posts/' + params.id, fields)
+                : await axios.post('api/posts', fields);
 
             const id = params.id || data.post._id;
 
@@ -100,16 +108,18 @@ export const AddPost = () => {
         } catch (err) {
             console.warn(err);
             alert(err);
-            resetField("title");
-            resetField("text");
-            resetField("tags");
+            resetField('title');
+            resetField('text');
+            resetField('tags');
             setLoading(false);
         }
     };
 
     return (
         <Paper className={styles.root}>
-            <Backdrop sx={{ zIndex: theme => theme.zIndex.drawer + 1 }} open={isChangingFile || isLoading}>
+            <Backdrop
+                sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={isChangingFile || isLoading}>
                 <CircularProgress color="secondary" />
             </Backdrop>
             <Button onClick={() => inputFileRef.current?.click()} variant="outlined" size="large">
@@ -124,8 +134,7 @@ export const AddPost = () => {
                         variant="text"
                         color="secondary"
                         endIcon={<DeleteIcon />}
-                        onClick={() => setImageUrl("")}
-                    >
+                        onClick={() => setImageUrl('')}>
                         Delete
                     </Button>
                     <img className={styles.image} src={imageUrl} alt="Uploaded" />
@@ -141,8 +150,8 @@ export const AddPost = () => {
                     error={Boolean(errors.title?.message)}
                     helperText={errors.title?.message}
                     fullWidth
-                    {...register("title", {
-                        required: "Title required",
+                    {...register('title', {
+                        required: 'Title required',
                     })}
                 />
                 <TextField
@@ -153,9 +162,10 @@ export const AddPost = () => {
                     label="Add tags to your post"
                     error={Boolean(errors.tags?.message)}
                     helperText={errors.tags?.message}
-                    {...register("tags", {
-                        validate: value =>
-                            value.split(" ").filter(item => item.length > 12).length === 0 || "Too long tag name",
+                    {...register('tags', {
+                        validate: (value) =>
+                            value.split(' ').filter((item) => item.length > 12).length === 0 ||
+                            'Too long tag name',
                     })}
                 />
                 <TextField
@@ -168,13 +178,13 @@ export const AddPost = () => {
                     fullWidth
                     error={Boolean(errors.text?.message)}
                     helperText={errors.text?.message}
-                    {...register("text", {
-                        required: "Description required",
+                    {...register('text', {
+                        required: 'Description required',
                     })}
                 />
                 <div className={styles.buttons}>
                     <Button disabled={!isValid} type="submit" size="large" variant="contained">
-                        {params.id ? "Save" : "Publish"}
+                        {params.id ? 'Save' : 'Publish'}
                     </Button>
                     <Link to="/" className={styles.button_cancel}>
                         <Button size="large">Cancel</Button>

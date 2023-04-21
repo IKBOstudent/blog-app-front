@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Tab, Tabs, Typography } from '@mui/material';
 
 import styles from './Home.module.scss';
 
@@ -31,6 +31,7 @@ export const Home = () => {
     React.useEffect(() => {
         if (sortTag) {
             // search by tag
+            setSortType('latest');
             dispatch(fetchPostsByTag(sortTag));
         } else {
             // search by sort type
@@ -52,13 +53,19 @@ export const Home = () => {
     return (
         <>
             {postsLoading || posts.items.length ? ( // sort tabs
-                <Tabs className={styles.tabs} value={sortType === 'latest' ? 0 : 1}>
-                    <Tab onClick={() => setSortType('latest')} label="New" />
-                    {!sortTag && <Tab onClick={() => setSortType('popular')} label="Popular" />}
-                </Tabs>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs className={styles.tabs} value={sortType === 'latest' ? 0 : 1}>
+                        <Tab onClick={() => setSortType('latest')} label="New" />
+                        <Tab
+                            onClick={() => setSortType('popular')}
+                            label="Popular"
+                            disabled={Boolean(sortTag)}
+                        />
+                    </Tabs>
+                </Box>
             ) : null}
 
-            {tagsLoading || posts.items.length ? ( // tags tabs
+            {tagsLoading || tags.items.length ? ( // tags tabs
                 <TagsBlock items={tags.items} isLoading={tagsLoading} />
             ) : null}
 
