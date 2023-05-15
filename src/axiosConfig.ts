@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: '/',
+    baseURL: 'https://blog-app-server-docker.onrender.com/',
 });
 
 instance.interceptors.request.use((config) => {
