@@ -38,6 +38,7 @@ export const Home = () => {
             dispatch(fetchPosts(sortType));
             dispatch(fetchTags());
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortType, sortTag]);
 
     if (posts.status === 'error') {

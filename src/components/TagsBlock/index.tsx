@@ -1,8 +1,7 @@
 import React from 'react';
 import { Tag } from '@mui/icons-material';
-import { Chip, Skeleton, Typography } from '@mui/material';
-import { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Chip, Skeleton } from '@mui/material';
+import { useContext } from 'react';
 import { TagContext } from '../../App';
 
 import styles from './TagsBlock.module.scss';

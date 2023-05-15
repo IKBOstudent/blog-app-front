@@ -1,7 +1,7 @@
 import React from 'react';
 import { Backdrop, Button, CircularProgress, Paper, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Link, useNavigate, Navigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axiosConfig';
 
@@ -75,6 +75,7 @@ export const AddPost = () => {
                 })
                 .finally(() => setLoading(false));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.id]);
 
     const onSubmit = async ({

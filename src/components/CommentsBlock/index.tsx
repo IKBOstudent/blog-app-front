@@ -1,9 +1,9 @@
-import React from "react";
-import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
+import React from 'react';
+import { Avatar, Divider, List, ListItem, ListItemAvatar, Typography } from '@mui/material';
 
-import styles from "./CommentsBlock.module.scss";
-import { IComment } from "redux/slices/PostsSlice/types";
-import CommentsSkeleton from "./CommentsSkeleton";
+import styles from './CommentsBlock.module.scss';
+import { IComment } from 'redux/slices/PostsSlice/types';
+import CommentsSkeleton from './CommentsSkeleton';
 
 interface CommentsProps {
     isLoading: boolean;
