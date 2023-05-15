@@ -1,20 +1,20 @@
-import React from "react";
-import { UseFormHandleSubmit, useForm } from "react-hook-form";
-import { Navigate } from "react-router-dom";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { Navigate } from 'react-router-dom';
 
-import { Alert, Button, CircularProgress, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Button, CircularProgress, Paper, TextField, Typography } from '@mui/material';
 
-import validator from "validator";
-import { fetchAuthLogin } from "../../redux/slices/AuthSlice";
+import validator from 'validator';
+import { fetchAuthLogin } from '../../redux/slices/AuthSlice';
 
-import styles from "./Login.module.scss";
-import { useAppDispatch, useAppSelector } from "hooks";
+import styles from './Login.module.scss';
+import { useAppDispatch, useAppSelector } from 'hooks';
 
 export const Login = () => {
     const dispatch = useAppDispatch();
-    const isAuth = useAppSelector(state => Boolean(state.AuthReducer.user));
+    const isAuth = useAppSelector((state) => Boolean(state.AuthReducer.user));
 
-    const [error, setError] = React.useState({ name: "", status: false });
+    const [error, setError] = React.useState({ name: '', status: false });
 
     const [isLoading, setLoading] = React.useState(false);
 
@@ -24,10 +24,10 @@ export const Login = () => {
         formState: { errors, isValid },
     } = useForm({
         defaultValues: {
-            email: "",
-            password: "",
+            email: '',
+            password: '',
         },
-        mode: "onChange",
+        mode: 'onChange',
     });
 
     const onSubmit = async (values: { email: string; password: string }) => {
@@ -36,13 +36,13 @@ export const Login = () => {
             const data = await dispatch(fetchAuthLogin(values)).unwrap();
 
             if (data.token) {
-                window.localStorage.setItem("token", data.token);
+                window.localStorage.setItem('token', data.token);
             } else {
                 alert("Server Error! Didn't receive auth token");
             }
         } catch (err) {
             console.warn(err);
-            setError({ name: "Invalid credentials", status: true });
+            setError({ name: 'Invalid credentials', status: true });
         } finally {
             setLoading(false);
         }
@@ -59,7 +59,7 @@ export const Login = () => {
             </Typography>
 
             {error.status && (
-                <Alert severity="error" style={{ marginBottom: "30px" }}>
+                <Alert severity="error" style={{ marginBottom: '30px' }}>
                     {error.name}
                 </Alert>
             )}
@@ -71,10 +71,10 @@ export const Login = () => {
                     error={Boolean(errors.email?.message)}
                     helperText={errors.email?.message}
                     fullWidth
-                    {...register("email", {
-                        required: "Enter your email",
+                    {...register('email', {
+                        required: 'Enter your email',
                         validate: {
-                            isEmail: value => validator.isEmail(value) || "Invalid email",
+                            isEmail: (value) => validator.isEmail(value) || 'Invalid email',
                         },
                     })}
                 />
@@ -84,11 +84,16 @@ export const Login = () => {
                     error={Boolean(errors.password?.message)}
                     helperText={errors.password?.message}
                     fullWidth
-                    {...register("password", {
-                        required: "Enter your password",
+                    {...register('password', {
+                        required: 'Enter your password',
                     })}
                 />
-                <Button disabled={!isValid || isLoading} type="submit" size="large" variant="contained" fullWidth>
+                <Button
+                    disabled={!isValid || isLoading}
+                    type="submit"
+                    size="large"
+                    variant="contained"
+                    fullWidth>
                     Sign in
                     {isLoading && <CircularProgress color="secondary" className={styles.loader} />}
                 </Button>
