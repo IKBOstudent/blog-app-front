@@ -1,23 +1,10 @@
 # BlogMan Front
 
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)
+![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)
+![SASS](https://img.shields.io/badge/SASS-hotpink.svg?style=for-the-badge&logo=SASS&logoColor=white)
+
 Приложение разработано как клиентская часть сайта BlogMan. 
-Ссылка на сайт
 
-## Использованные технологии
-
-- SPA на [React](https://reactjs.org/) 
-- Роутинг - [React Router](https://reacttraining.com/react-router/web/guides/philosophy)
-- State management на [Redux Toolkit](https://redux-toolkit.js.org/)
-- Styling - [SCSS](https://sass-scss.ru/)
-- Material UI - [MUI](https://mui.com/)
-
-## Setup
-
-1. Clone the repository and install the dependencies
-```bash
-npm install
-```
-2. Start the frontend application locally
-```bash
-npm start
-```

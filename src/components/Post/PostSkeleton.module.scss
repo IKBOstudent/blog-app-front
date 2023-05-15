@@ -1,0 +1,31 @@
+.skeleton {
+    margin: 15px auto;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #303030;
+
+    &Content {
+        padding: 20px;
+    }
+
+    &Info {
+        padding-left: 40px;
+    }
+}
+
+.skeletonUser {
+    display: flex;
+
+    &Details {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.skeletonTags {
+    display: flex;
+
+    span {
+        margin-right: 15px;
+    }
+}
